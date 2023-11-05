@@ -7,7 +7,6 @@ serializer_classes = []
 for app_config in apps.get_app_configs():
     with contextlib.suppress(ImportError):
         serializers_module = f"{app_config.module.__name__}.api.serializers"
-        print(serializers_module)
         # Import the serializers module
         serializers_module = __import__(serializers_module, fromlist=["*"])
 

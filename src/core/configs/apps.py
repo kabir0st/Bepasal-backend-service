@@ -1,51 +1,35 @@
+VALID_APPS = [
+    'users', 'inventory', 'pos', 'payment', 'accounting', 'bizconnect',
+    'booksmandala'
+]
+COMMON_APPS = [
+    'users',
+    # lib
+    'rest_framework',
+    'django_tenants',
+    # defaults
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # 'django_cleanup.apps.CleanupConfig'
+]
+
 
 TENANT_TYPES = {
     # public
     "public": {
-        "APPS": [
-            'users',
-            'django_tenants',
-            "tenants",
-            # lib
-            'rest_framework',
-            # defaults
-            'django.contrib.admin',
-            'django.contrib.auth',
-            'django.contrib.contenttypes',
-            'django.contrib.sessions',
-            'django.contrib.messages',
-            'django.contrib.staticfiles',
-        ],
+        "APPS": ['tenants'] + COMMON_APPS,
         "URLCONF": "core.configs.urls.public"
     },
-    # "portfolio": {
-    #     "APPS": [
-    #         'users',
-    #         "cms",
-    #         # lib
-    #         'rest_framework',
-    #         # defaults
-    #         'django.contrib.admin',
-    #         'django.contrib.auth',
-    #         'django.contrib.contenttypes',
-    #         'django.contrib.sessions',
-    #         'django.contrib.messages',
-    #         'django.contrib.staticfiles',
-    #     ],
-    #     "URLCONF": "core.configs.urls.portfolio"
-    # },
-    # "oms": {
-    #     "APPS": ['users',
-    #              "cms",
-    #              # lib
-    #              'rest_framework',
-    #              # defaults
-    #              'django.contrib.admin',
-    #              'django.contrib.auth',
-    #              'django.contrib.contenttypes',
-    #              'django.contrib.sessions',
-    #              'django.contrib.messages',
-    #              'django.contrib.staticfiles',],
-    #     "URLCONF": "core.configs.urls.oms"
-    # },
+    "oms": {
+        "APPS": ['oms'] + COMMON_APPS,
+        "URLCONF": "core.configs.urls.oms"
+    },
+    "ecommerce": {
+        "APPS": ['oms', 'ecommerce'] + COMMON_APPS,
+        "URLCONF": "core.configs.urls.ecommerce"
+    },
 }
