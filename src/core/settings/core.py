@@ -1,6 +1,8 @@
 import mimetypes
 import os
 
+from core.configs.apps import TENANT_TYPES
+
 from .environments import BASE_DIR
 
 APPEND_SLASH = False
@@ -10,28 +12,16 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 100214400
 FILE_UPLOAD_MAX_MEMORY_SIZE = 100214400
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100214400
 
-INSTALLED_APPS = [
-    # apps
-    "users",
-    "tenants",
-    # libs
-    'django_filters',
-    "jazzmin",
-    "drf_yasg",
-    "rest_framework",
-    "corsheaders",
-    # default
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-]
+INSTALLED_APPS = []
+
+for schema in TENANT_TYPES:
+    INSTALLED_APPS += [
+        app for app in TENANT_TYPES[schema]["APPS"]
+        if app not in INSTALLED_APPS
+    ]
 
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
-    'django_tenants.middleware.TenantSubfolderMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -43,25 +33,19 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-TENANT_MODEL = "tenants.Client"
-
-TENANT_DOMAIN_MODEL = "tenants.Domain"
-ROOT_URLCONF = "core.urls"
-TENANT_SUBFOLDER_PREFIX = "bazar"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [os.path.join(BASE_DIR, "templates")],
-        "APP_DIRS": True,
+        'APP_DIRS': True,
         "OPTIONS": {
             "context_processors": [
-                'django.template.context_processors.request',
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-            ],
+            ]
         },
     },
 ]
@@ -71,7 +55,8 @@ WSGI_APPLICATION = "core.wsgi.application"
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME":
-        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "django.contrib.auth.password_validation."
+        "UserAttributeSimilarityValidator",
     },
     {
         "NAME":
@@ -87,7 +72,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "users.UserBase"
 
 LANGUAGE_CODE = "en-us"
 
@@ -146,4 +130,26 @@ INTERNAL_IPS = [
     # ...
 ]
 
-CKEDITOR_UPLOAD_PATH = "media/ckeditor_uploads/"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
+
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 100214400
+FILE_UPLOAD_MAX_MEMORY_SIZE = 100214400
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100214400

@@ -1,9 +1,10 @@
 from uuid import uuid4
 
-from core.utils.models import TimeStampedModel
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 from django.db import models
+
+from core.utils.models import TimeStampedModel
 
 
 def default_array():

@@ -2,16 +2,20 @@ import hashlib
 import random
 import uuid
 
-from core.utils.models import TimeStampedModel
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+
+from core.utils.models import TimeStampedModel
 from users.tasks import send_otp_email
 
 
+def get_random():
+    return random.randint(100000, 999999)
+
+
 class VerificationCode(TimeStampedModel):
-    code = models.CharField(max_length=6,
-                            default=random.randint(100000, 999999))
+    code = models.CharField(max_length=6, default=get_random)
     email = models.EmailField(unique=True)
     hash = models.TextField()
     is_email_sent = models.BooleanField(default=False)

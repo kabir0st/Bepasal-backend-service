@@ -1,7 +1,7 @@
 import os
 
-from .environments import (BASE_DIR, DB_NAME, DB_PASSWORD, DB_USERNAME, DEBUG,
-                           PREFIX_KEY, channel)
+from .environments import (DB_NAME, DB_PASSWORD, DB_USERNAME, PREFIX_KEY,
+                           channel)
 
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -23,33 +23,27 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
         "KEY_PREFIX": PREFIX_KEY,
+        'KEY_FUNCTION': 'django_tenants.cache.make_key',
+        'REVERSE_KEY_FUNCTION': 'django_tenants.cache.reverse_key',
     }
 }
 
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django_tenants.postgresql_backend",
+        "NAME": DB_NAME,
+        "USER": DB_USERNAME,
+        "PASSWORD": DB_PASSWORD,
+        "HOST": "127.0.0.1",
+        "PORT": 5432,
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": DB_NAME,
-            "USER": DB_USERNAME,
-            "PASSWORD": DB_PASSWORD,
-            "HOST": "127.0.0.1",
-            "PORT": 5432,
-        }
-    }
+}
 
 DATABASE_ROUTERS = ('django_tenants.routers.TenantSyncRouter', )
 if os.environ.get("GITHUB_WORKFLOW"):
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
+            "ENGINE": "django_tenants.postgresql_backend",
             "NAME": "github_actions",
             "USER": "postgres",
             "PASSWORD": "postgres",

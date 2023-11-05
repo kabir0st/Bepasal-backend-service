@@ -1,26 +1,17 @@
 {
-  "python.autoComplete.extraPaths": ["./app"],
-  "files.autoSave": "onFocusChange",
-  "python.linting.pylintPath": ".venv/bin/pylint",
-  "python.linting.pylintEnabled": true,
-  "python.linting.enabled": true,
-  "python.linting.lintOnSave": true,
-  "python.linting.pylintArgs": [
-    "--load-plugins",
-    "pylint_django",
-    "--django-settings-module=core.settings",
-    "--disable=C0111"
-  ],
-  "python.linting.pycodestyleEnabled": false,
-  "cSpell.words": [],
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/.venv/*/**": true
-  },
-  "python.defaultInterpreterPath": ".venv/bin/python3",
-  "editor.formatOnSave": true,
-  "python.formatting.provider": "yapf",
-  "breadcrumbs.enabled": true,
-  "python.analysis.extraPaths": ["./app"]
+	"python.autoComplete.extraPaths": ["./src"],
+	"files.autoSave": "onFocusChange",
+	"cSpell.words": [],
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/.venv/*/**": true
+	},
+	"python.defaultInterpreterPath": ".venv/bin/python3",
+	"editor.formatOnSave": true,
+	"breadcrumbs.enabled": true,
+	"python.analysis.extraPaths": ["./src"],
+	"[python]": {
+		"editor.formatOnType": false
+	}
 }
