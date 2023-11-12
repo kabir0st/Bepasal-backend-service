@@ -1,12 +1,9 @@
-VALID_APPS = [
-    'users', 'inventory', 'pos', 'payment', 'accounting', 'bizconnect',
-    'booksmandala'
-]
 COMMON_APPS = [
     'users',
     # lib
     'rest_framework',
     'django_tenants',
+    'drf_yasg',
     # defaults
     'django.contrib.admin',
     'django.contrib.auth',

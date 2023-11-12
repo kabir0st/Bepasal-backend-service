@@ -6,7 +6,6 @@ from tenants.models import Client, Domain
 
 
 def seeder():
-    prefix = 'http'
     main = 'localhost'
 
     clients = [{

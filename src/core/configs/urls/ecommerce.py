@@ -13,7 +13,7 @@ from core.utils.logics import index
 
 SchemaView = get_schema_view(
     openapi.Info(
-        title="Sajilo Bazar API",
+        title="BePasal API",
         default_version='v1',
         description="",
         terms_of_service="",
@@ -47,5 +47,5 @@ urlpatterns += static(django_setting.MEDIA_URL,
                       document_root=django_setting.MEDIA_ROOT)
 urlpatterns += static(django_setting.STATIC_URL,
                       document_root=django_setting.STATIC_ROOT)
-urlpatterns += [path('/super/', admin.site.urls)]
+urlpatterns += [path('super/', admin.site.urls)]
 urlpatterns.append(re_path(r'^(?:.*)/?$', index))

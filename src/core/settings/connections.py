@@ -1,7 +1,6 @@
 import os
 
-from .environments import (DB_NAME, DB_PASSWORD, DB_USERNAME, PREFIX_KEY,
-                           channel)
+from .environments import DB_NAME, DB_PASSWORD, DB_USERNAME, channel
 
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -19,14 +18,17 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_URL,
+        'TIMEOUT': 60,
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            'MAX_ENTRIES': 10000
         },
-        "KEY_PREFIX": PREFIX_KEY,
         'KEY_FUNCTION': 'django_tenants.cache.make_key',
-        'REVERSE_KEY_FUNCTION': 'django_tenants.cache.reverse_key',
+        'REVERSE_KEY_FUNCTION': 'django_tenants.cache.reverse_key'
     }
 }
+CACHE_MIDDLEWARE_SECONDS = 60
+
 
 DATABASES = {
     "default": {

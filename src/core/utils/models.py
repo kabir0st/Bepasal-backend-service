@@ -1,7 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.utils.text import slugify
-from django.core.exceptions import ValidationError
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def validate_image_size(value):
@@ -45,3 +44,14 @@ class SingletonModel(models.Model):
         except ObjectDoesNotExist:
             obj = cls.objects.create(id=1)
         return obj
+
+
+class AbstractItemInfo(models.Model):
+    selling_price = models.PositiveIntegerField(default=0)
+    crossed_price = models.PositiveBigIntegerField(default=0)
+    cost_price = models.PositiveIntegerField(default=0)
+    quantity = models.PositiveIntegerField(default=0)
+    sku = models.CharField(default='', max_length=255)
+
+    class Meta:
+        abstract = True
