@@ -13,9 +13,9 @@ KillSignal=SIGQUIT
 Type=notify
 NotifyAccess=all
 StandardError=syslog
-WorkingDirectory=/home/ubuntu/himalayan-trail-running-back/app
-Environment=/home/ubuntu/himalayan-trail-running-back/.venv/bin
-ExecStart=/home/ubuntu/himalayan-trail-running-back/.venv/bin/uwsgi --ini /home/ubuntu/himalayan-trail-running-back/app/configs/uwsgi.ini
+WorkingDirectory=/home/ubuntu/bepasal-backend/src
+Environment=/home/ubuntu/bepasal-backend/.venv/bin
+ExecStart=/home/ubuntu/bepasal/.venv/bin/uwsgi --ini /home/ubuntu/bepasal-backend/src/configs/uwsgi.ini
 
 [Install]
 WantedBy=multi-user.target
