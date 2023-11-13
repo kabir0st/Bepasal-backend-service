@@ -45,7 +45,6 @@ def image_directory_path(instance, filename):
 
 class UserBase(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     uuid = models.UUIDField(unique=True, default=uuid4, editable=False)
-    stripe_customer_id = models.CharField(max_length=255, default='')
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150)
@@ -53,7 +52,6 @@ class UserBase(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     phone_number = models.CharField(max_length=15, default='', blank=True)
 
     gender = models.CharField(max_length=8, default='')
-    dob = models.DateField(null=True, blank=True)
     address = models.TextField(default='', blank=True)
     zip_code = models.CharField(max_length=10, blank=True, default='')
     city = models.CharField(max_length=100, blank=True, default='')

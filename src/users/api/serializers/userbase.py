@@ -9,9 +9,8 @@ class RegisterUserBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBase
         fields = ('email', 'password', 'first_name', 'last_name',
-                  'phone_number', 'profile_image', 'gender', 'dob', 'address',
-                  'zip_code', 'city', 'country', 'blood_group', 'indexes',
-                  'preferred_size', 'designation')
+                  'phone_number', 'profile_image', 'gender', 'address',
+                  'zip_code', 'city', 'country')
 
         extra_kwargs = {
             'is_verified': {
@@ -39,11 +38,9 @@ class UserBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBase
         fields = ('email', 'password', 'first_name', 'last_name',
-                  'phone_number', 'profile_image', 'gender', 'dob', 'address',
-                  'zip_code', 'city', 'country', 'blood_group', 'indexes',
-                  'preferred_size', 'is_verified', 'last_login', 'is_staff',
-                  'id', 'distance_ran', 'event_participated_in_count', 'uuid',
-                  'created_at', 'is_active', 'designation')
+                  'phone_number', 'profile_image', 'gender', 'address',
+                  'zip_code', 'city', 'country', 'is_verified', 'last_login',
+                  'is_staff', 'id',  'uuid', 'created_at', 'is_active')
 
         extra_kwargs = {
             'id': {
