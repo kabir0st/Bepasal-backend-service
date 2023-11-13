@@ -4,6 +4,7 @@ COMMON_APPS = [
     'rest_framework',
     'django_tenants',
     'drf_yasg',
+    'ckeditor',
     # defaults
     'django.contrib.admin',
     'django.contrib.auth',

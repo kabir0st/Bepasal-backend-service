@@ -53,5 +53,9 @@ class AbstractItemInfo(models.Model):
     quantity = models.PositiveIntegerField(default=0)
     sku = models.CharField(default='', max_length=255)
 
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         abstract = True

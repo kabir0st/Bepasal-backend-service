@@ -6,7 +6,7 @@ from tenants.models import Client, Domain
 
 
 def seeder():
-    prod = True
+    prod = False
     main = 'localhost' if not prod else 'himalayancreatives.com'
 
     clients = [{

@@ -1,3 +1,7 @@
+import os
+from PIL import Image
+import random
+import string
 from functools import wraps
 from rest_framework.exceptions import APIException
 import dateutil.parser
@@ -132,3 +136,29 @@ def export_data(model, ids, document_name=None):
     document = Document.objects.create(model=model, name=document_name)
     export_data_task(document.id, ids)
     return document.id
+
+
+def optimize_image(image, output_image_path):
+    max_size_kb = 120
+    desired_ppi = 72
+    max_width = 600
+    if max(image.size) > max_width:
+        ratio = max_width / image.size[1]
+        new_size = tuple(int(x * ratio) for x in image.size)
+        image = image.resize(new_size, Image.Resampling.LANCZOS)
+    width, height = image.size
+    width_inch = width / desired_ppi
+    height_inch = height / desired_ppi
+    image = image.resize((int(width_inch * 72), int(height_inch * 72)),
+                         Image.Resampling.LANCZOS)
+    characters = string.ascii_letters
+    temp_path = ''.join(random.choice(characters) for _ in range(10))
+    quality = 100
+    image.save(temp_path, 'webp', quality=quality)
+    temp_size = os.path.getsize(temp_path)
+    while temp_size > (max_size_kb * 1024) and quality > 60:
+        quality -= 5
+        image.save(temp_path, 'webp', quality=quality)
+        temp_size = os.path.getsize(temp_path)
+    os.rename(temp_path, output_image_path)
+    return output_image_path
