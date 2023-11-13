@@ -5,8 +5,9 @@ from .item import ItemVariationSerializer, ItemSerializer
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    item_detail = ItemSerializer(source='item')
-    variation_detail = ItemVariationSerializer(source='variation')
+    item_detail = ItemSerializer(source='item', read_only=True)
+    variation_detail = ItemVariationSerializer(
+        source='variation', read_only=True)
 
     class Meta:
         model = OrderItem
@@ -14,7 +15,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_items = OrderItemSerializer(many=True, source='order_items')
+    order_items = OrderItemSerializer(
+        many=True, source='order_items', read_only=True)
 
     class Meta:
         model = Order
