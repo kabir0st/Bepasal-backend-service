@@ -35,6 +35,9 @@ api_version_1 = [
     path('app/whoami/', whoami),
     path('app/', include(router.urls)),
     path('ecom/', include('ecommerce.urls')),
+    path('users/', include('users.urls')),
+    path('oms/', include('oms.urls')),
+
 ]
 
 urlpatterns = [
