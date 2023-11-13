@@ -1,4 +1,4 @@
-from rest_framework.permissions import (SAFE_METHODS,
+from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 
 
@@ -10,3 +10,9 @@ class IsStaffOrReadOnly(IsAuthenticatedOrReadOnly):
                 return True
             return (request.user.is_authenticated and request.user.is_staff)
         return False
+
+
+class IsOwnerOrAdmin(IsAuthenticated):
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user or request.is_staff
