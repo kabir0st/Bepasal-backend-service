@@ -43,20 +43,20 @@ class ItemVariationSerializer(serializers.ModelSerializer):
 
 class ItemListSerializer(serializers.ModelSerializer):
 
-    category_str = serializers.CharField(source='category.name')
+    # category_str = serializers.CharField(source='category.name')
 
     class Meta:
         model = Item
-        fields = ('name', 'category_str', 'thumbnail_image', 'slug',
+        fields = ('name',  'thumbnail_image', 'slug',
                   'selling_price',
                   'crossed_price', 'quantity', 'sku')
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    category_str = serializers.CharField(source='category.name')
+    # category_str = serializers.CharField(source='category.name')
     images = ItemImageSerializer(many=True)
     thumbnail_image = Base64ImageField()
-    variations = ItemVariationSerializer(many=True)
+    variations = ItemVariationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
