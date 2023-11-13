@@ -11,6 +11,7 @@ from core.utils.logics import index
 from users.api.auth import login, login_refresh, logout, whoami
 from users.api.support_app import DocumentAPI, VerificationCodeAPI
 from oms.urls import router as oms_router, item_router
+
 router = SimpleRouter()
 
 router.register('verifications', VerificationCodeAPI)
@@ -48,7 +49,7 @@ SchemaView = get_schema_view(
     public=True,
     urlconf='',
     patterns=[*router.urls, *oms_router.urls,
-              *item_router.urls, *urlpatterns,],
+              *item_router.urls, *urlpatterns],
     permission_classes=[permissions.AllowAny],
 )
 
