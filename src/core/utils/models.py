@@ -27,6 +27,8 @@ class TimeStampedModel(models.Model):
     def __str__(self):
         if hasattr(self, 'name'):
             return self.name
+        if hasattr(self, 'slug'):
+            return self.slug
         return super().__str__()
 
 
