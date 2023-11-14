@@ -30,7 +30,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_items = OrderItemSerializer(
+    order_item_details = OrderItemSerializer(
         many=True, source='order_items', read_only=True)
     status_detail = OrderStatusSerializer(source='status', read_only=True)
 
