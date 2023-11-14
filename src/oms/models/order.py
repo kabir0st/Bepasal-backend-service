@@ -6,6 +6,11 @@ from oms.models.item import Item, ItemVariation
 from users.models.users import UserBase
 
 
+class OrderStatus(TimeStampedModel):
+    name = models.CharField(max_length=255, unique=True)
+    subtract_from_inventory = models.BooleanField(default=True)
+
+
 class Order(TimeStampedModel):
     user = models.ForeignKey(
         UserBase, on_delete=models.SET_NULL, null=True, blank=True,
@@ -17,6 +22,8 @@ class Order(TimeStampedModel):
     delivery_location = models.CharField(max_length=255, default='')
     geo_tag = models.JSONField(default=default_json)
 
+    status = models.ForeignKey(
+        OrderStatus, related_name='orders', on_delete=models.PROTECT)
     # prices
     total_price = models.DecimalField(null=True,
                                       blank=True,
@@ -40,8 +47,18 @@ class Order(TimeStampedModel):
                                             max_digits=60,
                                             decimal_places=2)
 
+    is_refunded = models.BooleanField(default=False)
+    is_cancelled = models.BooleanField(default=False)
+    cancellation_remarks = models.TextField(default='', blank=True)
+    refunded_remarks = models.TextField(default='', blank=True)
+
     def __str__(self, instance):
         return f'{instance.user}' if instance.user else instance.user_name
+
+
+class OrderItemStatus(TimeStampedModel):
+    name = models.CharField(max_length=255, unique=True)
+    subtract_from_inventory = models.BooleanField(default=True)
 
 
 class OrderItem(TimeStampedModel):
@@ -68,6 +85,13 @@ class OrderItem(TimeStampedModel):
                                       blank=True,
                                       max_digits=60,
                                       decimal_places=2)
+
+    is_refunded = models.BooleanField(default=False)
+    is_cancelled = models.BooleanField(default=False)
+
+    cancelled_remarks = models.TextField(default='', blank=True)
+    returned_remarks = models.TextField(default='', blank=True)
+    refunded_remarks = models.TextField(default='', blank=True)
 
     def __str__(self, instance):
         return f'''{instance.order}

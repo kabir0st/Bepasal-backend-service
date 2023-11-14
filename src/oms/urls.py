@@ -4,19 +4,21 @@ from rest_framework_nested import routers
 
 from oms.api.items import (CategoryAPI, ItemAPI, ItemImageAPI,
                            ItemVariationAPI, VariationTypeAPI)
-from oms.api.orders import OrderAPI
+from oms.api.orders import OrderAPI, OrderItemStatusAPI, OrderStatusAPI
 
 router = SimpleRouter()
 router.register('categories', CategoryAPI)
 
 router.register('items', ItemAPI)
-router.register('orders', OrderAPI)
 
+router.register('status/order', OrderStatusAPI)
+router.register('status/order-item', OrderItemStatusAPI)
+router.register('orders', OrderAPI)
 item_router = routers.NestedSimpleRouter(router,
                                          r'items',
                                          lookup='item')
 item_router.register('images', ItemImageAPI)
-item_router.register('variation_types', VariationTypeAPI)
+item_router.register('variation-types', VariationTypeAPI)
 item_router.register('variations', ItemVariationAPI)
 
 urlpatterns = [

@@ -1,16 +1,21 @@
 import os
-from PIL import Image
 import random
 import string
 from functools import wraps
-from rest_framework.exceptions import APIException
+
 import dateutil.parser
-from core.tasks import export_data_task
 from django.core.cache import cache
+from django.db import connection
 from django.db.transaction import atomic
+from PIL import Image
 from rest_framework import status
+from rest_framework.exceptions import APIException
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+
+from core.configs.apps import TENANT_TYPES
+from core.tasks import export_data_task
+from tenants.models import Client
 
 
 def are_model_fields_equal(obj1, obj2, *fields):
@@ -39,6 +44,12 @@ def copy_model(from_model, to_model, reference_class=None):
     return obj
 
 
+def client_has_app(app):
+    schema = connection.settings_dict['SCHEMA']
+    return (app in TENANT_TYPES[Client.objects.get(
+        schema_name=schema).type]["APPS"])
+
+
 def grab_error(func):
 
     @wraps(func)
@@ -53,7 +64,6 @@ def grab_error(func):
                     'error': f'{exp.__class__.__name__}: {exp}'
                 },
                 status=status.HTTP_400_BAD_REQUEST)
-
     return wrapper
 
 

@@ -24,6 +24,11 @@ class TimeStampedModel(models.Model):
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        if hasattr(self, 'name'):
+            return self.name
+        return super().__str__()
+
 
 class SingletonModel(models.Model):
 
@@ -50,7 +55,7 @@ class AbstractItemInfo(models.Model):
     selling_price = models.PositiveIntegerField(default=0)
     crossed_price = models.PositiveBigIntegerField(default=0)
     cost_price = models.PositiveIntegerField(default=0)
-    quantity = models.PositiveIntegerField(default=0)
+    quantity = models.IntegerField(default=0)
     sku = models.CharField(default='', max_length=255)
 
     is_active = models.BooleanField(default=True)
