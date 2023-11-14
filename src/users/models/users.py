@@ -46,8 +46,8 @@ def image_directory_path(instance, filename):
 class UserBase(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     uuid = models.UUIDField(unique=True, default=uuid4, editable=False)
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=150, blank=True, default='')
+    last_name = models.CharField(max_length=150, blank=True, default='')
 
     phone_number = models.CharField(max_length=15, default='', blank=True)
 
