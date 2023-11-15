@@ -14,6 +14,7 @@ from core.utils.models import AbstractItemInfo, TimeStampedModel
 
 class Category(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(default='', null=True, blank=True)
 
 
 def image_directory_path(instance, filename):
@@ -27,9 +28,6 @@ class Item(AbstractItemInfo):
     catagories = models.ManyToManyField(Category, blank=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
     thumbnail_image = models.ImageField(upload_to=image_directory_path)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
 
 @receiver(pre_save, sender=Item)
@@ -98,9 +96,6 @@ def handle_item_image_pre_save(sender, instance, *args, **kwargs):
 
 class VariationType(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return f"{self.name}"
 
 
 class VariationOption(TimeStampedModel):
