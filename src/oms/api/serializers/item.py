@@ -53,8 +53,7 @@ class ItemListSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    # category_str = serializers.CharField(source='category.name')
-    images = ItemImageSerializer(many=True)
+    images = ItemImageSerializer(many=True, read_only=True)
     thumbnail_image = Base64ImageField()
     variations = ItemVariationSerializer(many=True, read_only=True)
 
