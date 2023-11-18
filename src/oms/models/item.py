@@ -21,6 +21,10 @@ def image_directory_path(instance, filename):
     return f"images/{instance.slug}/{filename}"
 
 
+class VariationType(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+
 class Item(AbstractItemInfo):
     name = models.CharField(max_length=255)
     description = RichTextField()
@@ -28,6 +32,7 @@ class Item(AbstractItemInfo):
     catagories = models.ManyToManyField(Category, blank=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
     thumbnail_image = models.ImageField(upload_to=image_directory_path)
+    enabled_variation_types = models.ManyToManyField(VariationType, blank=True)
 
 
 @receiver(pre_save, sender=Item)
@@ -65,7 +70,7 @@ def handle_post_save_item(sender, instance, created, *args, **kwargs):
         post_save.connect(handle_post_save_item, sender=Item)
 
 
-class ItemImage(TimeStampedModel):
+class ItemImage(models.Model):
     item = models.ForeignKey(
         Item, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=image_directory_path,
@@ -94,11 +99,7 @@ def handle_item_image_pre_save(sender, instance, *args, **kwargs):
                 os.remove(optimized_image_path)
 
 
-class VariationType(TimeStampedModel):
-    name = models.CharField(max_length=255, unique=True)
-
-
-class VariationOption(TimeStampedModel):
+class VariationOption(models.Model):
     name = models.CharField(max_length=255)
     variation_type = models.ForeignKey(
         VariationType, on_delete=models.CASCADE, related_name='options')
@@ -107,12 +108,11 @@ class VariationOption(TimeStampedModel):
 class ItemVariation(AbstractItemInfo):
     item = models.ForeignKey(
         Item, on_delete=models.CASCADE, related_name='variations')
-    variation_type = models.ForeignKey(
-        VariationType, on_delete=models.PROTECT, related_name='variations')
-    variation = models.CharField(max_length=255)
+    variation_option_combination = models.ManyToManyField(
+        VariationOption, related_name='variations')
 
 
-class ItemVariationImage(TimeStampedModel):
+class ItemVariationImage(models.Model):
     item_variation = models.ForeignKey(
         ItemVariation, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=image_directory_path,

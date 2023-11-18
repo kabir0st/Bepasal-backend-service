@@ -4,9 +4,11 @@ from oms.api.serializers.item import (CategorySerializer, ItemImageSerializer,
                                       ItemListSerializer, ItemSerializer,
                                       ItemVariationImageSerializer,
                                       ItemVariationSerializer,
+                                      VariationOptionSerializer,
                                       VariationTypeSerializer)
 from oms.models.item import (Category, Item, ItemImage, ItemVariation,
-                             ItemVariationImage, VariationType)
+                             ItemVariationImage, VariationOption,
+                             VariationType)
 
 
 class CategoryAPI(DefaultViewSet):
@@ -35,17 +37,23 @@ class ItemImageAPI(DefaultViewSet):
     queryset = ItemImage.objects.filter().order_by('-id')
 
 
+class VariationTypeOptionAPI(DefaultViewSet):
+    serializer_class = VariationOptionSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = VariationOption.objects.filter().order_by('-id')
+
+    def get_queryset(self):
+        id = self.kwargs.get('variation_pk', None)
+        if id is None:
+            return self.queryset.none()
+        return self.queryset.filter(variation_type__id=id)
+
+
 class VariationTypeAPI(DefaultViewSet):
     serializer_class = VariationTypeSerializer
     search_fields = ["name"]
     permission_classes = [IsAdminOrReadOnly]
     queryset = VariationType.objects.filter().order_by('-id')
-
-    def get_queryset(self):
-        slug = self.kwargs.get('item_slug', None)
-        if slug is None:
-            return self.queryset.none()
-        return self.queryset.filter(item__slug=slug)
 
 
 class ItemVariationAPI(DefaultViewSet):

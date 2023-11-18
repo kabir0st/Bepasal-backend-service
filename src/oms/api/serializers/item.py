@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from core.utils.serializers import Base64ImageField
 from oms.models.item import (Category, Item, ItemImage, ItemVariation,
-                             ItemVariationImage, VariationType)
+                             ItemVariationImage, VariationOption,
+                             VariationType)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -19,10 +20,23 @@ class ItemImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class VariationOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VariationOption
+        fields = '__all__'
+
+
 class VariationTypeSerializer(serializers.ModelSerializer):
+
+    variation_options = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = VariationType
         fields = '__all__'
+
+    def get_variation_options(self, instance):
+        return VariationOptionSerializer(
+            instance.options.filter(), many=True).data
 
 
 class ItemVariationImageSerializer(serializers.ModelSerializer):
@@ -35,21 +49,30 @@ class ItemVariationImageSerializer(serializers.ModelSerializer):
 
 class ItemVariationSerializer(serializers.ModelSerializer):
     images = ItemVariationImageSerializer(many=True)
+    variation_option_combination_detail = serializers.SerializerMethodField(
+        read_only=True)
 
     class Meta:
         model = ItemVariation
         fields = '__all__'
 
+    def get_variation_option_combination_detail(self, instance):
+        return VariationOptionSerializer(
+            instance.variation_option_combination.filter(), many=True).data
+
 
 class ItemListSerializer(serializers.ModelSerializer):
-
-    # category_str = serializers.CharField(source='category.name')
+    category_details = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Item
         fields = ('name',  'thumbnail_image', 'slug',
                   'selling_price',
-                  'crossed_price', 'quantity', 'sku')
+                  'crossed_price', 'quantity', 'sku', 'is_active',
+                  'category_details')
+
+    def get_category_details(self, instance):
+        return CategorySerializer(instance.category).data
 
 
 class ItemSerializer(serializers.ModelSerializer):
