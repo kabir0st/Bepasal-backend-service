@@ -1,3 +1,7 @@
+from django.db import transaction
+from rest_framework import status
+from rest_framework.response import Response
+
 from core.permissions import IsAdminOrReadOnly
 from core.utils.viewsets import DefaultViewSet
 from oms.api.serializers.item import (CategorySerializer, ItemImageSerializer,
@@ -29,6 +33,20 @@ class ItemAPI(DefaultViewSet):
         if self.action == 'list':
             return ItemListSerializer
         return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
+        with transaction.atomic():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            obj = serializer.save()
+            data = request.data.copy()
+            data['item'] = obj.id
+            empty_variation_serializer = ItemVariationSerializer(
+                instance=obj, data=data)
+            empty_variation_serializer.is_valid(raise_exception=True)
+            empty_variation_serializer.save()
+        return Response(serializer.data,
+                        status=status.HTTP_201_CREATED)
 
 
 class ItemImageAPI(DefaultViewSet):

@@ -25,14 +25,39 @@ class VariationType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
 
-class Item(AbstractItemInfo):
+class VariationOption(models.Model):
+    name = models.CharField(max_length=255)
+    variation_type = models.ForeignKey(
+        VariationType, on_delete=models.CASCADE, related_name='options')
+
+
+class Item(models.Model):
     name = models.CharField(max_length=255)
     description = RichTextField()
     continue_selling_after_out_of_stock = models.BooleanField(default=True)
     catagories = models.ManyToManyField(Category, blank=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
-    thumbnail_image = models.ImageField(upload_to=image_directory_path)
+    thumbnail_image = models.ImageField(upload_to=image_directory_path,
+                                        blank=True, null=True)
     enabled_variation_types = models.ManyToManyField(VariationType, blank=True)
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    def save(self, *args, **kwargs):
+        super(Item, self).save(*args, **kwargs)
+        ItemVariation.objects.create(item=self)
+
+
+class ItemVariation(AbstractItemInfo):
+    item = models.ForeignKey(
+        Item, on_delete=models.CASCADE, related_name='variations')
+    variation_option_combination = models.ManyToManyField(
+        VariationOption, related_name='variations', blank=True)
 
 
 @receiver(pre_save, sender=Item)
@@ -97,19 +122,6 @@ def handle_item_image_pre_save(sender, instance, *args, **kwargs):
                         optimized_image_file,
                         save=False)
                 os.remove(optimized_image_path)
-
-
-class VariationOption(models.Model):
-    name = models.CharField(max_length=255)
-    variation_type = models.ForeignKey(
-        VariationType, on_delete=models.CASCADE, related_name='options')
-
-
-class ItemVariation(AbstractItemInfo):
-    item = models.ForeignKey(
-        Item, on_delete=models.CASCADE, related_name='variations')
-    variation_option_combination = models.ManyToManyField(
-        VariationOption, related_name='variations')
 
 
 class ItemVariationImage(models.Model):

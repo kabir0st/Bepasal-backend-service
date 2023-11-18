@@ -20,6 +20,15 @@ class Base64ImageField(serializers.ImageField):
             raise APIException(f'Invalid Base64 format. {exp}') from exp
         return super().to_internal_value(data)
 
+    def get_attribute(self, instance):
+        # Override get_attribute to handle the case when the field is None
+        value = instance
+        for attr in self.source_attrs:
+            if value is None:
+                break
+            value = getattr(value, attr, None)
+        return value
+
 
 class Base64FileField(serializers.FileField):
 

@@ -48,7 +48,7 @@ class ItemVariationImageSerializer(serializers.ModelSerializer):
 
 
 class ItemVariationSerializer(serializers.ModelSerializer):
-    images = ItemVariationImageSerializer(many=True)
+    images = ItemVariationImageSerializer(many=True, read_only=True)
     variation_option_combination_detail = serializers.SerializerMethodField(
         read_only=True)
 
@@ -63,23 +63,27 @@ class ItemVariationSerializer(serializers.ModelSerializer):
 
 class ItemListSerializer(serializers.ModelSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
+    default_item_details = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Item
         fields = ('name',  'thumbnail_image', 'slug',
-                  'selling_price',
-                  'crossed_price', 'quantity', 'sku', 'is_active',
-                  'category_details')
+                  'is_active',
+                  'category_details', 'default_item_details')
 
     def get_category_details(self, instance):
-        return CategorySerializer(instance.category).data
+        return CategorySerializer(instance.catagories, many=True).data
+
+    def get_default_item_details(self, instance):
+        obj, _ = ItemVariation.objects.get_or_create(item=instance)
+        return ItemVariationSerializer(instance=obj).data
 
 
 class ItemSerializer(serializers.ModelSerializer):
     images = ItemImageSerializer(many=True, read_only=True)
-    thumbnail_image = Base64ImageField()
+    thumbnail_image = Base64ImageField(required=False)  # Make it optional
     variations = ItemVariationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
-        exclude = ('cost_price',)
+        fields = '__all__'
