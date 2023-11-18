@@ -25,28 +25,22 @@ class Order(TimeStampedModel):
     status = models.ForeignKey(
         OrderStatus, related_name='orders', on_delete=models.PROTECT)
     # prices
-    total_price = models.DecimalField(null=True,
-                                      blank=True,
-                                      max_digits=60,
-                                      decimal_places=2)
-    total_discount_amount = models.DecimalField(null=True,
-                                                blank=True,
-                                                max_digits=60,
-                                                decimal_places=2)
-    extra_discount = models.DecimalField(null=True,
-                                         blank=True,
-                                         max_digits=60,
-                                         decimal_places=2)
+    total_price = models.DecimalField(max_digits=60,
+                                      decimal_places=2,
+                                      default=0.00)
+    total_discount_amount = models.DecimalField(max_digits=60,
+                                                decimal_places=2,
+                                                default=0.00)
+    extra_discount = models.DecimalField(max_digits=60,
+                                         decimal_places=2,
+                                         default=0.00)
     discount_remarks = models.CharField(max_length=255, default='')
-    total_bill_amount = models.DecimalField(null=True,
-                                            blank=True,
-                                            max_digits=60,
-                                            decimal_places=2)
-    total_amount_paid = models.DecimalField(null=True,
-                                            blank=True,
-                                            max_digits=60,
-                                            decimal_places=2)
-
+    total_bill_amount = models.DecimalField(max_digits=60,
+                                            decimal_places=2,
+                                            default=0.00)
+    total_amount_paid = models.DecimalField(max_digits=60,
+                                            decimal_places=2,
+                                            default=0.00)
     is_refunded = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
     cancellation_remarks = models.TextField(default='', blank=True)
@@ -72,19 +66,16 @@ class OrderItem(TimeStampedModel):
     item_name = models.CharField(max_length=255)
     variation = models.CharField(max_length=255)
 
-    price = models.DecimalField(null=True,
-                                blank=True,
-                                max_digits=60,
-                                decimal_places=2)
-    discount_amount = models.DecimalField(null=True,
-                                          blank=True,
-                                          max_digits=60,
-                                          decimal_places=2)
+    price = models.DecimalField(max_digits=60,
+                                decimal_places=2,
+                                default=0.00)
+    discount_amount = models.DecimalField(max_digits=60,
+                                          decimal_places=2,
+                                          default=0.00)
     discount_remarks = models.CharField(max_length=255, default='')
-    bill_amount = models.DecimalField(null=True,
-                                      blank=True,
-                                      max_digits=60,
-                                      decimal_places=2)
+    bill_amount = models.DecimalField(max_digits=60,
+                                      decimal_places=2,
+                                      default=0.00)
 
     is_refunded = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
