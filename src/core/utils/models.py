@@ -59,6 +59,7 @@ class AbstractItemInfo(models.Model):
     cost_price = models.PositiveIntegerField(default=0)
     quantity = models.IntegerField(default=0)
     sku = models.CharField(default='', max_length=255)
+    is_eligible_for_discount = models.BooleanField(default=True)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
