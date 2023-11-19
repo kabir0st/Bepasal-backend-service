@@ -18,11 +18,14 @@ item_router = routers.NestedSimpleRouter(router,
                                          r'items',
                                          lookup='item')
 item_router.register('images', ItemImageAPI)
+item_router.register('variations', ItemVariationAPI)
+
 router.register('variation-types', VariationTypeAPI)
 variation_type_router = routers.NestedSimpleRouter(
     router, 'variation-types', lookup='id')
-item_router.register('variations', ItemVariationAPI)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('', include(item_router.urls)),
+    path('', include(variation_type_router.urls))
 ]

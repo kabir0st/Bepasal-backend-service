@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from core.permissions import IsAdminOrReadOnly
 from core.utils.viewsets import DefaultViewSet
 from oms.api.serializers.item import (CategorySerializer, ItemImageSerializer,
-                                      ItemListSerializer, ItemSerializer,
+                                      ItemSerializer,
                                       ItemVariationImageSerializer,
                                       ItemVariationSerializer,
                                       VariationOptionSerializer,
@@ -29,11 +29,6 @@ class ItemAPI(DefaultViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Item.objects.filter().order_by('-id')
 
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return ItemListSerializer
-        return super().get_serializer_class()
-
     def create(self, request, *args, **kwargs):
         with transaction.atomic():
             serializer = self.get_serializer(data=request.data)
@@ -45,7 +40,7 @@ class ItemAPI(DefaultViewSet):
                 instance=obj, data=data)
             empty_variation_serializer.is_valid(raise_exception=True)
             empty_variation_serializer.save()
-        return Response(serializer.data,
+        return Response(self.get_serializer(instance=obj).data,
                         status=status.HTTP_201_CREATED)
 
 

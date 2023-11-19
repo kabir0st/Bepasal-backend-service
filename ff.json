@@ -1,0 +1,18 @@
+{
+    "name": "item one name",
+    "description": "asdfasdf",
+    "continue_selling_after_out_of_stock": false,
+    "is_active": true,
+    "catagories": [
+       1
+    ],
+    "enabled_variation_types": [
+       1
+    ],
+    "selling_price": 220,
+    "crossed_price": 300,
+    "cost_price": 20,
+    "quantity": 10,
+    "sku": "234234",
+    "is_eligible_for_discount": true
+ }

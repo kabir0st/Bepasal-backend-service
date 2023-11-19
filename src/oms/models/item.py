@@ -48,16 +48,13 @@ class Item(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-    def save(self, *args, **kwargs):
-        super(Item, self).save(*args, **kwargs)
-        ItemVariation.objects.create(item=self)
-
 
 class ItemVariation(AbstractItemInfo):
     item = models.ForeignKey(
         Item, on_delete=models.CASCADE, related_name='variations')
     variation_option_combination = models.ManyToManyField(
         VariationOption, related_name='variations', blank=True)
+    is_default_variation = models.BooleanField(default=False)
 
 
 @receiver(pre_save, sender=Item)
