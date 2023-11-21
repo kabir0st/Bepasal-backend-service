@@ -2,7 +2,7 @@ from django.db import models
 
 from core.utils.functions import default_json
 from core.utils.models import TimeStampedModel
-from oms.models.item import Item, ItemVariation
+from oms.models.item import ItemVariation
 from users.models.users import UserBase
 
 
@@ -58,9 +58,7 @@ class OrderItemStatus(TimeStampedModel):
 class OrderItem(TimeStampedModel):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='order_items')
-    item_instance = models.ForeignKey(
-        Item, on_delete=models.PROTECT, related_name='order_items')
-    variation = models.ForeignKey(
+    item = models.ForeignKey(
         ItemVariation, on_delete=models.PROTECT, related_name='order_items')
 
     item_name = models.CharField(max_length=255)
@@ -83,7 +81,3 @@ class OrderItem(TimeStampedModel):
     cancelled_remarks = models.TextField(default='', blank=True)
     returned_remarks = models.TextField(default='', blank=True)
     refunded_remarks = models.TextField(default='', blank=True)
-
-    def __str__(self, instance):
-        return f'''{instance.order}
-        {instance.order if instance.item_instance else instance.item_name }'''
