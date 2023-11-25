@@ -55,6 +55,7 @@ class ItemVariation(AbstractItemInfo):
     variation_option_combination = models.ManyToManyField(
         VariationOption, related_name='variations', blank=True)
     is_default_variation = models.BooleanField(default=False)
+    is_eligible_for_discounts = models.BooleanField(default=True)
 
 
 @receiver(pre_save, sender=Item)

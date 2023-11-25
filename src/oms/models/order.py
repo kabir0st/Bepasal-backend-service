@@ -11,17 +11,17 @@ class OrderStatus(TimeStampedModel):
     subtract_from_inventory = models.BooleanField(default=True)
 
 
+class DeliveryMethod(TimeStampedModel):
+    name = models.CharField(max_length=255, unique=True)
+
+
 class Order(TimeStampedModel):
     user = models.ForeignKey(
         UserBase, on_delete=models.SET_NULL, null=True, blank=True,
         related_name='orders')
-    user_name = models.CharField(max_length=255, default='')
-    user_contact = models.CharField(max_length=255, default='')
-
-    delivery_note = models.CharField(max_length=255, default='')
-    delivery_location = models.CharField(max_length=255, default='')
-    geo_tag = models.JSONField(default=default_json)
-
+    user_name = models.CharField(max_length=255, default='', blank=True)
+    user_contact = models.CharField(max_length=255, default='', blank=True)
+    backup_contact = models.CharField(max_length=255, default='', blank=True)
     status = models.ForeignKey(
         OrderStatus, related_name='orders', on_delete=models.PROTECT)
     # prices
@@ -43,8 +43,19 @@ class Order(TimeStampedModel):
                                             default=0.00)
     is_refunded = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
+
     cancellation_remarks = models.TextField(default='', blank=True)
     refunded_remarks = models.TextField(default='', blank=True)
+
+    delivery_method = models.ForeignKey(
+        DeliveryMethod, on_delete=models.SET_NULL, null=True, blank=True)
+
+    extra_fields = models.JSONField(default=default_json)
+
+    delivery_note = models.CharField(max_length=255, default='', blank=True)
+    delivery_location = models.CharField(
+        max_length=255, default='', blank=True)
+    geo_tag = models.JSONField(default=default_json, blank=True)
 
     def __str__(self, instance):
         return f'{instance.user}' if instance.user else instance.user_name
