@@ -14,6 +14,7 @@ from core.utils.models import AbstractItemInfo, TimeStampedModel
 
 class Category(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
+    slug = models.CharField(max_length=255, blank=True, default='')
     description = models.TextField(default='', null=True, blank=True)
 
 

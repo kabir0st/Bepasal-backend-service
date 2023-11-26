@@ -36,6 +36,7 @@ class ItemAPI(DefaultViewSet):
             obj = serializer.save()
             data = request.data.copy()
             data['item'] = obj.id
+            # bug
             empty_variation_serializer = ItemVariationSerializer(
                 instance=obj, data=data)
             empty_variation_serializer.is_valid(raise_exception=True)
