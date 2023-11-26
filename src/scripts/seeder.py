@@ -12,15 +12,9 @@ def seeder():
     main = 'localhost' if not prod else 'himalayancreatives.com'
 
     clients = [{
-        'name': "Client 2",
-        'slug': 'client2',
-        'url': f'oms.{main}',
-        'type': 'oms'
-
-    }, {
-        'name': "Client 3",
-        'slug': 'client3',
-        'url': f'ecom.{main}',
+        'name': "dai ko pasal",
+        'slug': 'pasal',
+        'url': f'pasal.{main}',
         'type': 'ecommerce'
 
     }]
@@ -50,7 +44,8 @@ def seeder():
 
         with tenant_context(client):
             user_class = get_user_model()
-            admin = user_class.objects.create_superuser('admin', '', 'pass')
+            admin = user_class.objects.create_superuser(
+                'admin@gmail.com', '', 'pass')
             admin.save()
             status = ['Initiated', 'Processing',
                       'Sent for delivery', 'Delivered']
