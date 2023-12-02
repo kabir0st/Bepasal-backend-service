@@ -87,14 +87,18 @@ class ProductListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_category_details(self, instance):
-        return CategorySerializer(instance.catagories, many=True).data
+        return CategorySerializer(instance.categories, many=True).data
 
     def get_default_variation(self, instance):
+        if default_var := instance.variations.filter(
+                is_active=True, is_default_variation=True).first():
+            return ProductVariationSerializer(
+                default_var, context={'request': self.context.get(
+                    'request')}).data
         return ProductVariationSerializer(
             instance.variations.filter(
-                is_active=True, is_default_variation=True).order_by(
-                    '-id').first(), context={'request': self.context.get(
-                        'request')}).data
+                is_active=True).first(), context={'request': self.context.get(
+                    'request')}).data
 
 
 class ProductSerializer(ProductListSerializer):

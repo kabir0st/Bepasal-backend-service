@@ -9,13 +9,30 @@ from django.utils.text import slugify
 from PIL import Image
 
 from core.utils.functions import optimize_image
-from core.utils.models import AbstractProductInfo, TimeStampedModel
+from core.utils.models import AbstractProductInfo
 
 
-class Category(TimeStampedModel):
+class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug = models.CharField(max_length=255, blank=True, default='')
     description = models.TextField(default='', null=True, blank=True)
+    parent_category = models.ForeignKey(
+        'Category', on_delete=models.PROTECT, null=True, blank=True)
+
+    class Meta:
+        ordering = ['-id']
+
+    def save(self, *args, **kwargs):
+        if hasattr(self, 'name'):
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        if hasattr(self, 'name'):
+            return self.name
+        if hasattr(self, 'slug'):
+            return self.slug
+        return super().__str__()
 
 
 def image_directory_path(instance, filename):

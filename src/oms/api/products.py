@@ -6,14 +6,15 @@ from core.permissions import IsAdminOrReadOnly
 from core.utils.viewsets import DefaultViewSet
 from oms.api.serializers.product import (CategorySerializer,
                                          ProductImageSerializer,
+                                         ProductListSerializer,
                                          ProductSerializer,
                                          ProductVariationImageSerializer,
                                          ProductVariationSerializer,
                                          VariationOptionSerializer,
                                          VariationTypeSerializer)
-from oms.models.product import (Category, Product, ProductImage, ProductVariation,
-                                ProductVariationImage, VariationOption,
-                                VariationType)
+from oms.models.product import (Category, Product, ProductImage,
+                                ProductVariation, ProductVariationImage,
+                                VariationOption, VariationType)
 
 
 class CategoryAPI(DefaultViewSet):
@@ -30,6 +31,11 @@ class ProductAPI(DefaultViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Product.objects.filter().order_by('-id')
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ProductListSerializer
+        return super().get_serializer_class()
+
     def create(self, request, *args, **kwargs):
         with transaction.atomic():
             serializer = self.get_serializer(data=request.data)
@@ -37,7 +43,6 @@ class ProductAPI(DefaultViewSet):
             obj = serializer.save()
             data = request.data.copy()
             data['product'] = obj.id
-            # bug
             empty_variation_serializer = ProductVariationSerializer(
                 instance=obj, data=data)
             empty_variation_serializer.is_valid(raise_exception=True)
