@@ -51,9 +51,9 @@ class Command(BaseCommand):
             with transaction.atomic():
                 applied_variation_combinations = []
                 product = Product.objects.create(
-                    name=f"{fake.word()} {i}",
+                    name=f"{fake.word()} {fake.word()}",
                     description=fake.text(),
-                    thumbnail_image=fake.image_url(),
+                    thumbnail_image="https://picsum.photos/600",
                 )
                 product.categories.set(random.sample(
                     list(categories), random.randint(1, 5)))
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                             selling_price=fake.random_int(min=10, max=100),
                             crossed_price=fake.random_int(min=10, max=100),
                             cost_price=fake.random_int(min=5, max=50),
-                            quantity=fake.random_int(min=1, max=100),
+                            stock=fake.random_int(min=1, max=100),
                             sku=fake.word(),
                             is_eligible_for_discount=fake.boolean(),
                         ).variation_option_combination.set(

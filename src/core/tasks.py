@@ -68,9 +68,9 @@ def extract_field_data(obj):
             data[field.name] = ', '.join(names)
             if obj.__class__.__name__ in ['Ticket', 'InvoiceSummary'
                                           ] and field.name == 'addons':
-                addon_quantity = getattr(obj, 'addon_quantity')
+                addon_stock = getattr(obj, 'addon_stock')
                 for in_obj in field_value.all():
-                    data[f"Addon {str(in_obj)}"] = addon_quantity.get(
+                    data[f"Addon {str(in_obj)}"] = addon_stock.get(
                         str(in_obj.id), 0)
         elif isinstance(field, (models.ManyToOneRel, models.ManyToManyRel)):
             if names := [str(in_obj) for in_obj in field_value.all()]:

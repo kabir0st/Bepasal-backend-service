@@ -74,14 +74,16 @@ class OrderItem(TimeStampedModel):
 
     product_name = models.CharField(max_length=255)
     variation = models.CharField(max_length=255)
+    quantity = models.PositiveBigIntegerField(default=1)
+    price_per_item = models.DecimalField(max_digits=60,
+                                         decimal_places=2,
+                                         default=0.00)
 
-    price = models.DecimalField(max_digits=60,
-                                decimal_places=2,
-                                default=0.00)
     discount_amount = models.DecimalField(max_digits=60,
                                           decimal_places=2,
                                           default=0.00)
     discount_remarks = models.CharField(max_length=255, default='')
+
     bill_amount = models.DecimalField(max_digits=60,
                                       decimal_places=2,
                                       default=0.00)

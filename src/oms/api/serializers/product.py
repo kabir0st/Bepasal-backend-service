@@ -5,6 +5,7 @@ from oms.models.product import (Category, Product, ProductImage,
                                 ProductVariation,
                                 ProductVariationImage, VariationOption,
                                 VariationType)
+from django.db.models import Sum
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -81,10 +82,14 @@ class ProductVariationSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     default_variation = serializers.SerializerMethodField(read_only=True)
+    test_thumbnail_image = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
         fields = "__all__"
+
+    def get_test_thumbnail_image(self, instance):
+        return 'https://picsum.photos/500'
 
     def get_category_details(self, instance):
         return CategorySerializer(instance.categories, many=True).data
@@ -99,6 +104,57 @@ class ProductListSerializer(serializers.ModelSerializer):
             instance.variations.filter(
                 is_active=True).first(), context={'request': self.context.get(
                     'request')}).data
+
+
+class AdminProductListSerializer(serializers.ModelSerializer):
+    total_stock = serializers.SerializerMethodField(read_only=True)
+    total_sold = serializers.SerializerMethodField(read_only=True)
+    highest_cost_price = serializers.SerializerMethodField(read_only=True)
+    highest_selling_price = serializers.SerializerMethodField(read_only=True)
+    enabled_variations = serializers.SerializerMethodField(read_only=True)
+    variants = serializers.SerializerMethodField(read_only=True)
+    test_thumbnail_image = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+    def get_test_thumbnail_image(self, instance):
+        return 'https://picsum.photos/500'
+
+    def get_total_sold(self, instance):
+        total_sold = 0
+        for variation in instance.variations.all():
+            sold = variation.order_items.filter(
+                is_cancelled=False).aggregate(
+                    total_sold=Sum('quantity'))['total_sold']
+            total_sold += sold if sold is not None else 0
+        return total_sold
+
+    def get_highest_cost_price(self, instance):
+        price = instance.variations.order_by('-cost_price').first().cost_price
+        return f"Rs. {price}/-"
+
+    def get_highest_selling_price(self, instance):
+        price = instance.variations.order_by(
+            '-selling_price').first().selling_price
+        return f"Rs. {price}/-"
+
+    def get_total_stock(self, instance):
+        total_stock = instance.variations.filter(
+        ).aggregate(
+            total_stock=Sum('stock'))['total_stock']
+        return total_stock if total_stock is not None else 0
+
+    def get_enabled_variations(self, instance):
+        return ", ".join([
+            variation.name for variation in
+            instance.enabled_variation_types.filter(
+            )
+        ])
+
+    def get_variants(self, instance):
+        return instance.variations.count()
 
 
 class ProductSerializer(ProductListSerializer):

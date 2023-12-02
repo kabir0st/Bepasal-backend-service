@@ -57,7 +57,7 @@ class AbstractProductInfo(models.Model):
     selling_price = models.PositiveIntegerField(default=0)
     crossed_price = models.PositiveBigIntegerField(default=0)
     cost_price = models.PositiveIntegerField(default=0)
-    quantity = models.IntegerField(default=0)
+    stock = models.IntegerField(default=0)
     sku = models.CharField(default='', max_length=255)
     is_eligible_for_discount = models.BooleanField(default=True)
 

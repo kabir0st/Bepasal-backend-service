@@ -10,7 +10,7 @@ class IsAdmin(IsAuthenticated):
         return False
 
 
-class IsAdminOrReadOnly(BasePermission):
+class IsStaffOrReadOnly(BasePermission):
 
     def has_permission(self, request, view):
         return (True

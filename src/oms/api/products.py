@@ -2,9 +2,10 @@ from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 
-from core.permissions import IsAdminOrReadOnly
+from core.permissions import IsStaffOrReadOnly
 from core.utils.viewsets import DefaultViewSet
-from oms.api.serializers.product import (CategorySerializer,
+from oms.api.serializers.product import (AdminProductListSerializer,
+                                         CategorySerializer,
                                          ProductImageSerializer,
                                          ProductListSerializer,
                                          ProductSerializer,
@@ -20,7 +21,7 @@ from oms.models.product import (Category, Product, ProductImage,
 class CategoryAPI(DefaultViewSet):
     serializer_class = CategorySerializer
     search_fields = ["name"]
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = Category.objects.filter().order_by('-id')
 
 
@@ -28,11 +29,13 @@ class ProductAPI(DefaultViewSet):
     serializer_class = ProductSerializer
     search_fields = ["name"]
     lookup_field = 'slug'
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = Product.objects.filter().order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'list':
+            if self.request.user.is_staff:
+                return AdminProductListSerializer
             return ProductListSerializer
         return super().get_serializer_class()
 
@@ -53,13 +56,13 @@ class ProductAPI(DefaultViewSet):
 
 class ProductImageAPI(DefaultViewSet):
     serializer_class = ProductImageSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = ProductImage.objects.filter().order_by('-id')
 
 
 class VariationTypeOptionAPI(DefaultViewSet):
     serializer_class = VariationOptionSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = VariationOption.objects.filter().order_by('-id')
 
     def get_queryset(self):
@@ -72,7 +75,7 @@ class VariationTypeOptionAPI(DefaultViewSet):
 class VariationTypeAPI(DefaultViewSet):
     serializer_class = VariationTypeSerializer
     search_fields = ["name"]
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = VariationType.objects.filter().order_by('-id')
 
 
@@ -80,7 +83,7 @@ class ProductVariationAPI(DefaultViewSet):
     serializer_class = ProductVariationSerializer
     search_fields = ["slug"]
     lookup_field = 'slug'
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = ProductVariation.objects.filter().order_by('-id')
 
     def get_queryset(self):
@@ -92,7 +95,7 @@ class ProductVariationAPI(DefaultViewSet):
 
 class ProductVariationImageAPI(DefaultViewSet):
     serializer_class = ProductVariationImageSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     queryset = ProductVariationImage.objects.filter().order_by('-id')
 
     def get_queryset(self):
