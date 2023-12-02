@@ -10,7 +10,7 @@ from rest_framework.routers import SimpleRouter
 from core.utils.logics import index
 from users.api.auth import login, login_refresh, logout, whoami
 from users.api.support_app import DocumentAPI, VerificationCodeAPI
-from oms.urls import router as oms_router, item_router
+from oms.urls import router as oms_router, product_router
 
 router = SimpleRouter()
 
@@ -50,7 +50,7 @@ SchemaView = get_schema_view(
     public=True,
     urlconf='',
     patterns=[*router.urls, *oms_router.urls,
-              *item_router.urls, *urlpatterns],
+              *product_router.urls, *urlpatterns],
     permission_classes=[permissions.AllowAny],
 )
 

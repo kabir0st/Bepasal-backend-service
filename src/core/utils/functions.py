@@ -25,7 +25,7 @@ def are_model_fields_equal(obj1, obj2, *fields):
 
 
 class InfinitePagination(PageNumberPagination):
-    page_size = 10  # Set the number of items to be returned per page
+    page_size = 10  # Set the number of products to be returned per page
     page_size_query_param = 'page_size'
     max_page_size = 1000  # Optionally set a maximum page size
 

@@ -53,7 +53,7 @@ class SingletonModel(models.Model):
         return obj
 
 
-class AbstractItemInfo(models.Model):
+class AbstractProductInfo(models.Model):
     selling_price = models.PositiveIntegerField(default=0)
     crossed_price = models.PositiveBigIntegerField(default=0)
     cost_price = models.PositiveIntegerField(default=0)

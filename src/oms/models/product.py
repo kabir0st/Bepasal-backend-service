@@ -9,7 +9,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from core.utils.functions import optimize_image
-from core.utils.models import AbstractItemInfo, TimeStampedModel
+from core.utils.models import AbstractProductInfo, TimeStampedModel
 
 
 class Category(TimeStampedModel):
@@ -42,7 +42,7 @@ class VariationOption(models.Model):
         return f"{self.variation_type} {self.name}"
 
 
-class Item(models.Model):
+class Product(models.Model):
     name = models.CharField(max_length=255)
     description = RichTextField()
     continue_selling_after_out_of_stock = models.BooleanField(default=True)
@@ -60,9 +60,9 @@ class Item(models.Model):
         return f'{self.name}'
 
 
-class ItemVariation(AbstractItemInfo):
-    item = models.ForeignKey(
-        Item, on_delete=models.CASCADE, related_name='variations')
+class ProductVariation(AbstractProductInfo):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='variations')
     variation_option_combination = models.ManyToManyField(
         VariationOption, related_name='variations', blank=True)
     is_default_variation = models.BooleanField(default=False)
@@ -70,15 +70,16 @@ class ItemVariation(AbstractItemInfo):
 
     def __str__(self):
         variation_combination = [
-            str(option) for option in self.variation_option_combination.filter()
+            str(option) for option in (
+                self.variation_option_combination.filter())
         ]
-        return f"{self.item} {' '.join(variation_combination)}"
+        return f"{self.product} {' '.join(variation_combination)}"
 
 
-@receiver(pre_save, sender=Item)
-def handle_item_pre_save(sender, instance, *args, **kwargs):
+@receiver(pre_save, sender=Product)
+def handle_product_pre_save(sender, instance, *args, **kwargs):
     instance.trigger_gen = not bool(instance.id)
-    if instance.id and instance.id != Item.objects.get(id=instance.id).name:
+    if instance.id and instance.id != Product.objects.get(id=instance.id).name:
         instance.trigger_gen = True
     if instance.thumbnail_image:
         with contextlib.suppress(Exception):
@@ -99,27 +100,27 @@ def handle_item_pre_save(sender, instance, *args, **kwargs):
                 os.remove(optimized_image_path)
 
 
-@receiver(post_save, sender=Item)
-def handle_post_save_item(sender, instance, created, *args, **kwargs):
+@receiver(post_save, sender=Product)
+def handle_post_save_product(sender, instance, created, *args, **kwargs):
     if instance.trigger_gen:
         instance.slug = f"{slugify(instance.name)}-{instance.id}"
-        pre_save.disconnect(handle_item_pre_save, sender=Item)
-        post_save.disconnect(handle_post_save_item, sender=Item)
+        pre_save.disconnect(handle_product_pre_save, sender=Product)
+        post_save.disconnect(handle_post_save_product, sender=Product)
         instance.save()
-        pre_save.connect(handle_item_pre_save, sender=Item)
-        post_save.connect(handle_post_save_item, sender=Item)
+        pre_save.connect(handle_product_pre_save, sender=Product)
+        post_save.connect(handle_post_save_product, sender=Product)
 
 
-class ItemImage(models.Model):
-    item = models.ForeignKey(
-        Item, on_delete=models.CASCADE, related_name='images')
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=image_directory_path,
                               null=True,
                               blank=True)
 
 
-@receiver(pre_save, sender=ItemImage)
-def handle_item_image_pre_save(sender, instance, *args, **kwargs):
+@receiver(pre_save, sender=ProductImage)
+def handle_product_image_pre_save(sender, instance, *args, **kwargs):
     if instance.image:
         with contextlib.suppress(Exception):
             image_name = instance.image.name
@@ -139,16 +140,16 @@ def handle_item_image_pre_save(sender, instance, *args, **kwargs):
                 os.remove(optimized_image_path)
 
 
-class ItemVariationImage(models.Model):
-    item_variation = models.ForeignKey(
-        ItemVariation, on_delete=models.CASCADE, related_name='images')
+class ProductVariationImage(models.Model):
+    product_variation = models.ForeignKey(
+        ProductVariation, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=image_directory_path,
                               null=True,
                               blank=True)
 
 
-@receiver(pre_save, sender=ItemVariationImage)
-def handle_item_image_variation_pre_save(sender, instance, *args, **kwargs):
+@receiver(pre_save, sender=ProductVariationImage)
+def handle_product_image_variation_pre_save(sender, instance, *args, **kwargs):
     if instance.image:
         with contextlib.suppress(Exception):
             image_name = instance.image.name

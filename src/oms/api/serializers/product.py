@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
 from core.utils.serializers import Base64ImageField
-from oms.models.item import (Category, Item, ItemImage, ItemVariation,
-                             ItemVariationImage, VariationOption,
-                             VariationType)
+from oms.models.product import (Category, Product, ProductImage,
+                                ProductVariation,
+                                ProductVariationImage, VariationOption,
+                                VariationType)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -12,11 +13,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ItemImageSerializer(serializers.ModelSerializer):
+class ProductImageSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
 
     class Meta:
-        model = ItemImage
+        model = ProductImage
         fields = '__all__'
 
 
@@ -42,25 +43,25 @@ class VariationTypeSerializer(serializers.ModelSerializer):
             instance.options.filter(), many=True).data
 
 
-class ItemVariationImageSerializer(serializers.ModelSerializer):
+class ProductVariationImageSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
 
     class Meta:
-        model = ItemVariationImage
+        model = ProductVariationImage
         fields = '__all__'
 
 
-class ItemVariationSerializer(serializers.ModelSerializer):
-    images = ItemVariationImageSerializer(many=True, read_only=True)
+class ProductVariationSerializer(serializers.ModelSerializer):
+    images = ProductVariationImageSerializer(many=True, read_only=True)
     variation_option_combination_detail = serializers.SerializerMethodField(
         read_only=True)
 
     class Meta:
-        model = ItemVariation
+        model = ProductVariation
         fields = '__all__'
 
     def get_images(self, instance):
-        return ItemVariationImageSerializer(
+        return ProductVariationImageSerializer(
             instance.images.filter(), many=True).data
 
     def get_variation_option_combination_detail(self, instance):
@@ -71,45 +72,45 @@ class ItemVariationSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         is_admin = request.user.is_staff if request else False
         representation = super(
-            ItemVariationSerializer, self).to_representation(instance)
+            ProductVariationSerializer, self).to_representation(instance)
         if not is_admin:
             representation.pop('cost_price', None)
         return representation
 
 
-class ItemListSerializer(serializers.ModelSerializer):
+class ProductListSerializer(serializers.ModelSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     default_variation = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Item
+        model = Product
         fields = "__all__"
 
     def get_category_details(self, instance):
         return CategorySerializer(instance.catagories, many=True).data
 
     def get_default_variation(self, instance):
-        return ItemVariationSerializer(
+        return ProductVariationSerializer(
             instance.variations.filter(
                 is_active=True, is_default_variation=True).order_by(
                     '-id').first(), context={'request': self.context.get(
                         'request')}).data
 
 
-class ItemSerializer(ItemListSerializer):
+class ProductSerializer(ProductListSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     images = serializers.SerializerMethodField(read_only=True)
     variations = serializers.SerializerMethodField(read_only=True)
     thumbnail_image = Base64ImageField(required=False)  # Make it optional
 
     class Meta:
-        model = Item
+        model = Product
         fields = '__all__'
 
     def get_images(self, instance):
-        return ItemImageSerializer(instance.images.filter(), many=True).data
+        return ProductImageSerializer(instance.images.filter(), many=True).data
 
     def get_variations(self, instance):
-        return ItemVariationSerializer(
+        return ProductVariationSerializer(
             instance.variations.filter(is_active=True),
             many=True, context={'request': self.context.get('request')}).data

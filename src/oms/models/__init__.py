@@ -1,3 +1,3 @@
-from .item import *
+from .product import *
 from .payment import *
 from .order import *

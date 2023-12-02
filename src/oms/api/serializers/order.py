@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from oms.models.order import (Order, OrderItem, OrderItemStatus, OrderStatus)
-from .item import ItemVariationSerializer, ItemSerializer
+from oms.models.order import (
+    Order, OrderItem, OrderItemStatus, OrderStatus)
+from .product import ProductVariationSerializer, ProductSerializer
 
 
 class OrderStatusSerializer(serializers.ModelSerializer):
@@ -19,10 +20,11 @@ class OrderItemStatusSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    item_detail = ItemSerializer(source='item', read_only=True)
-    variation_detail = ItemVariationSerializer(
+    product_detail = ProductSerializer(source='product', read_only=True)
+    variation_detail = ProductVariationSerializer(
         source='variation', read_only=True)
-    status_detail = OrderItemStatusSerializer(source='status', read_only=True)
+    status_detail = OrderItemStatusSerializer(
+        source='status', read_only=True)
 
     class Meta:
         model = OrderItem
@@ -30,7 +32,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_item_details = OrderItemSerializer(
+    order_product_details = OrderItemSerializer(
         many=True, source='order_items', read_only=True)
     status_detail = OrderStatusSerializer(source='status', read_only=True)
 

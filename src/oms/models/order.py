@@ -2,7 +2,7 @@ from django.db import models
 
 from core.utils.functions import default_json
 from core.utils.models import TimeStampedModel
-from oms.models.item import ItemVariation
+from oms.models.product import ProductVariation
 from users.models.users import UserBase
 
 
@@ -69,10 +69,10 @@ class OrderItemStatus(TimeStampedModel):
 class OrderItem(TimeStampedModel):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='order_items')
-    item = models.ForeignKey(
-        ItemVariation, on_delete=models.PROTECT, related_name='order_items')
+    product = models.ForeignKey(
+        ProductVariation, on_delete=models.PROTECT, related_name='order_items')
 
-    item_name = models.CharField(max_length=255)
+    product_name = models.CharField(max_length=255)
     variation = models.CharField(max_length=255)
 
     price = models.DecimalField(max_digits=60,

@@ -65,7 +65,8 @@ class DefaultViewSet(ModelViewSet):
             'status':
             True,
             'document':
-            export_data(model, [item.id for item in queryset], document_name)
+            export_data(
+                model, [product.id for product in queryset], document_name)
         }
         return Response(response)
 

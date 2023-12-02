@@ -4,15 +4,16 @@ from rest_framework.response import Response
 
 from core.permissions import IsAdminOrReadOnly
 from core.utils.viewsets import DefaultViewSet
-from oms.api.serializers.item import (CategorySerializer, ItemImageSerializer,
-                                      ItemSerializer,
-                                      ItemVariationImageSerializer,
-                                      ItemVariationSerializer,
-                                      VariationOptionSerializer,
-                                      VariationTypeSerializer)
-from oms.models.item import (Category, Item, ItemImage, ItemVariation,
-                             ItemVariationImage, VariationOption,
-                             VariationType)
+from oms.api.serializers.product import (CategorySerializer,
+                                         ProductImageSerializer,
+                                         ProductSerializer,
+                                         ProductVariationImageSerializer,
+                                         ProductVariationSerializer,
+                                         VariationOptionSerializer,
+                                         VariationTypeSerializer)
+from oms.models.product import (Category, Product, ProductImage, ProductVariation,
+                                ProductVariationImage, VariationOption,
+                                VariationType)
 
 
 class CategoryAPI(DefaultViewSet):
@@ -22,12 +23,12 @@ class CategoryAPI(DefaultViewSet):
     queryset = Category.objects.filter().order_by('-id')
 
 
-class ItemAPI(DefaultViewSet):
-    serializer_class = ItemSerializer
+class ProductAPI(DefaultViewSet):
+    serializer_class = ProductSerializer
     search_fields = ["name"]
     lookup_field = 'slug'
     permission_classes = [IsAdminOrReadOnly]
-    queryset = Item.objects.filter().order_by('-id')
+    queryset = Product.objects.filter().order_by('-id')
 
     def create(self, request, *args, **kwargs):
         with transaction.atomic():
@@ -35,9 +36,9 @@ class ItemAPI(DefaultViewSet):
             serializer.is_valid(raise_exception=True)
             obj = serializer.save()
             data = request.data.copy()
-            data['item'] = obj.id
+            data['product'] = obj.id
             # bug
-            empty_variation_serializer = ItemVariationSerializer(
+            empty_variation_serializer = ProductVariationSerializer(
                 instance=obj, data=data)
             empty_variation_serializer.is_valid(raise_exception=True)
             empty_variation_serializer.save()
@@ -45,10 +46,10 @@ class ItemAPI(DefaultViewSet):
                         status=status.HTTP_201_CREATED)
 
 
-class ItemImageAPI(DefaultViewSet):
-    serializer_class = ItemImageSerializer
+class ProductImageAPI(DefaultViewSet):
+    serializer_class = ProductImageSerializer
     permission_classes = [IsAdminOrReadOnly]
-    queryset = ItemImage.objects.filter().order_by('-id')
+    queryset = ProductImage.objects.filter().order_by('-id')
 
 
 class VariationTypeOptionAPI(DefaultViewSet):
@@ -70,27 +71,27 @@ class VariationTypeAPI(DefaultViewSet):
     queryset = VariationType.objects.filter().order_by('-id')
 
 
-class ItemVariationAPI(DefaultViewSet):
-    serializer_class = ItemVariationSerializer
+class ProductVariationAPI(DefaultViewSet):
+    serializer_class = ProductVariationSerializer
     search_fields = ["slug"]
     lookup_field = 'slug'
     permission_classes = [IsAdminOrReadOnly]
-    queryset = ItemVariation.objects.filter().order_by('-id')
+    queryset = ProductVariation.objects.filter().order_by('-id')
 
     def get_queryset(self):
-        slug = self.kwargs.get('item_slug', None)
+        slug = self.kwargs.get('product_slug', None)
         if slug is None:
             return self.queryset.none()
-        return self.queryset.filter(item__slug=slug)
+        return self.queryset.filter(product__slug=slug)
 
 
-class ItemVariationImageAPI(DefaultViewSet):
-    serializer_class = ItemVariationImageSerializer
+class ProductVariationImageAPI(DefaultViewSet):
+    serializer_class = ProductVariationImageSerializer
     permission_classes = [IsAdminOrReadOnly]
-    queryset = ItemVariationImage.objects.filter().order_by('-id')
+    queryset = ProductVariationImage.objects.filter().order_by('-id')
 
     def get_queryset(self):
         slug = self.kwargs.get('variation_slug', None)
         if slug is None:
             return self.queryset.none()
-        return self.queryset.filter(item_variation__slug=slug)
+        return self.queryset.filter(product_variation__slug=slug)

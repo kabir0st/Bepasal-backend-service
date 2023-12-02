@@ -60,7 +60,7 @@ def extract_field_data(obj):
                 ext = extract_field_data(field_value)
                 ext = {
                     f'{field.name} : {key}': value
-                    for key, value in ext.items()
+                    for key, value in ext.products()
                 }
                 data |= ext
         elif isinstance(field, models.ManyToManyField):
