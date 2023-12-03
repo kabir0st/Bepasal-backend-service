@@ -96,6 +96,10 @@ class ProductVariation(AbstractProductInfo):
         ]
         return f"{self.product} {' '.join(variation_combination)}"
 
+    def save(self, *args, **kwargs) -> None:
+        self.trigger_gen = None
+        return super().save(*args, **kwargs)
+
 
 @receiver(pre_save, sender=Product)
 def handle_product_pre_save(sender, instance, *args, **kwargs):
