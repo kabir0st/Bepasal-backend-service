@@ -162,7 +162,7 @@ class ProductSerializer(ProductListSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     images = serializers.SerializerMethodField(read_only=True)
     variations = serializers.SerializerMethodField(read_only=True)
-    thumbnail_image = Base64ImageField(required=False)  # Make it optional
+    thumbnail_image = Base64ImageField(required=False)
 
     class Meta:
         model = Product
