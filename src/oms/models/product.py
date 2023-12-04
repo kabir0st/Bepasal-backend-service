@@ -62,12 +62,14 @@ class VariationOption(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = RichTextField()
-    continue_selling_after_out_of_stock = models.BooleanField(default=True)
     categories = models.ManyToManyField(Category, blank=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
     thumbnail_image = models.ImageField(upload_to=image_directory_path,
                                         blank=True, null=True)
     enabled_variation_types = models.ManyToManyField(VariationType, blank=True)
+
+    is_item_digital = models.BooleanField(default=False)
+    continue_selling_after_out_of_stock = models.BooleanField(default=True)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -81,13 +83,24 @@ class Product(models.Model):
         return f'{self.name}'
 
 
+def file_directory_path(instance, filename):
+    return f"digital_files/{instance.product.slug}/{filename}"
+
+
 class ProductVariation(AbstractProductInfo):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='variations')
     variation_option_combination = models.ManyToManyField(
         VariationOption, related_name='variations', blank=True)
+
     is_default_variation = models.BooleanField(default=False)
     is_eligible_for_discounts = models.BooleanField(default=True)
+
+    auto_complete_digital_orders = models.BooleanField(default=True)
+    digital_file = models.FileField(upload_to=file_directory_path,
+                                    blank=True, null=True)
+
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         variation_combination = [

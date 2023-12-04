@@ -76,6 +76,7 @@ class ProductVariationSerializer(serializers.ModelSerializer):
             ProductVariationSerializer, self).to_representation(instance)
         if not is_admin:
             representation.pop('cost_price', None)
+            representation.pop('digital_file', None)
         return representation
 
 
