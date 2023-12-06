@@ -2,6 +2,7 @@ COMMON_APPS = [
     'users',
     # lib
     'rest_framework',
+    'django_nextjs',
     'django_tenants',
     'drf_yasg',
     'django_filters',

@@ -57,4 +57,4 @@ SchemaView = get_schema_view(
 urlpatterns += [path("api/docs/",
                      SchemaView.with_ui('swagger', cache_timeout=0),
                      name='schema-swagger-ui')]
-urlpatterns.append(re_path(r'^(?:.*)/?$', index))
+# urlpatterns.append(re_path(r'^(?:.*)/?$', index))

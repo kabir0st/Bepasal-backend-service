@@ -44,6 +44,8 @@ urlpatterns = [
          SchemaView.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
     path('api/', include(api_version_1)),
+    path("", include("django_nextjs.urls"))
+
 ]
 urlpatterns += static(django_setting.MEDIA_URL,
                       document_root=django_setting.MEDIA_ROOT)
