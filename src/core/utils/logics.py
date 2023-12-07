@@ -1,3 +1,4 @@
+import contextlib
 from typing import Dict, Tuple, Union
 from urllib.parse import quote
 
@@ -23,7 +24,6 @@ async def _render_nextjs_page_to_string(
     params = [(k, v) for k in request.GET.keys()
               for v in request.GET.getlist(k)]
     params.append(('schema', 'pasal'))
-
     async with aiohttp.ClientSession(
         cookies=_get_nextjs_request_cookies(request),
         headers=_get_nextjs_request_headers(request, headers),
@@ -67,4 +67,6 @@ async def render_nextjs_page(
 
 
 async def index(request):
-    return await render_nextjs_page(request, schema='pasal')
+    with contextlib.suppress(Exception):
+        return await render_nextjs_page(request, schema='pasal')
+    return HttpResponse(status=404)

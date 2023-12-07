@@ -16,6 +16,9 @@ from oms.api.serializers.product import (AdminProductListSerializer,
 from oms.models.product import (Category, Product, ProductImage,
                                 ProductVariation, ProductVariationImage,
                                 VariationOption, VariationType)
+from .filtersets import (CategoryFilter, ProductFilter,
+                         ProductVariationFilter,
+                         VariationOptionFilter, VariationTypeFilter)
 
 
 class CategoryAPI(DefaultViewSet):
@@ -23,6 +26,7 @@ class CategoryAPI(DefaultViewSet):
     search_fields = ["name"]
     permission_classes = [IsStaffOrReadOnly]
     queryset = Category.objects.filter().order_by('-id')
+    filterset_class = CategoryFilter
 
 
 class ProductAPI(DefaultViewSet):
@@ -31,6 +35,7 @@ class ProductAPI(DefaultViewSet):
     lookup_field = 'slug'
     permission_classes = [IsStaffOrReadOnly]
     queryset = Product.objects.filter().order_by('-id')
+    filterset_class = ProductFilter
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -60,13 +65,15 @@ class ProductImageAPI(DefaultViewSet):
     queryset = ProductImage.objects.filter().order_by('-id')
 
 
-class VariationTypeOptionAPI(DefaultViewSet):
+class VariationOptionAPI(DefaultViewSet):
     serializer_class = VariationOptionSerializer
     permission_classes = [IsStaffOrReadOnly]
     queryset = VariationOption.objects.filter().order_by('-id')
+    filterset_class = VariationOptionFilter
 
     def get_queryset(self):
-        id = self.kwargs.get('variation_pk', None)
+        print(self.kwargs)
+        id = self.kwargs.get('variation_type_pk', None)
         if id is None:
             return self.queryset.none()
         return self.queryset.filter(variation_type__id=id)
@@ -77,6 +84,7 @@ class VariationTypeAPI(DefaultViewSet):
     search_fields = ["name"]
     permission_classes = [IsStaffOrReadOnly]
     queryset = VariationType.objects.filter().order_by('-id')
+    filterset_class = VariationTypeFilter
 
 
 class ProductVariationAPI(DefaultViewSet):
@@ -85,6 +93,7 @@ class ProductVariationAPI(DefaultViewSet):
     lookup_field = 'slug'
     permission_classes = [IsStaffOrReadOnly]
     queryset = ProductVariation.objects.filter().order_by('-id')
+    filterset_class = ProductVariationFilter
 
     def get_queryset(self):
         slug = self.kwargs.get('product_slug', None)

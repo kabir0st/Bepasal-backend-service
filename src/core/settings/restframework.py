@@ -122,3 +122,5 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-outline-success"
     }
 }
+
+# FILTERS_DEFAULT_LOOKUP_EXPR = 'icontains'
