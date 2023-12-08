@@ -11,18 +11,6 @@ from users.api.auth import login, login_refresh, logout, whoami
 from users.api.support_app import DocumentAPI, VerificationCodeAPI
 from core.utils.logics import index
 
-SchemaView = get_schema_view(
-    openapi.Info(
-        title="BePasal API",
-        default_version='v1',
-        description="",
-        terms_of_service="",
-        contact=openapi.Contact(email="himalayancreatives.com"),
-        license=openapi.License(name="BSD License"),
-    ),
-    public=True,
-    permission_classes=[permissions.AllowAny],
-)
 router = SimpleRouter()
 router.register('verifications', VerificationCodeAPI)
 
@@ -40,9 +28,6 @@ api_version_1 = [
 ]
 
 urlpatterns = [
-    path("api/docs/",
-         SchemaView.with_ui('swagger', cache_timeout=0),
-         name='schema-swagger-ui'),
     path('api/', include(api_version_1)),
     path("", include("django_nextjs.urls"))
 
@@ -52,4 +37,25 @@ urlpatterns += static(django_setting.MEDIA_URL,
 urlpatterns += static(django_setting.STATIC_URL,
                       document_root=django_setting.STATIC_ROOT)
 urlpatterns += [path('super/', admin.site.urls)]
+
+
+SchemaView = get_schema_view(
+    openapi.Info(
+        title="BePasal API",
+        default_version='v1',
+        description="",
+        terms_of_service="",
+        contact=openapi.Contact(email="himalayancreatives.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    urlconf='',
+    patterns=[*urlpatterns],
+    permission_classes=[permissions.AllowAny],
+)
+
+
+urlpatterns += [path("api/docs/",
+                     SchemaView.with_ui('swagger', cache_timeout=0),
+                     name='schema-swagger-ui')]
 urlpatterns.append(re_path(r'^(?:.*)/?$', index))

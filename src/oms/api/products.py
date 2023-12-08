@@ -72,7 +72,6 @@ class VariationOptionAPI(DefaultViewSet):
     filterset_class = VariationOptionFilter
 
     def get_queryset(self):
-        print(self.kwargs)
         id = self.kwargs.get('variation_type_pk', None)
         if id is None:
             return self.queryset.none()
