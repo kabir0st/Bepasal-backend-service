@@ -70,11 +70,14 @@ class ProductVariationSerializer(serializers.ModelSerializer):
             instance.variation_option_combination.filter(), many=True).data
 
     def to_representation(self, instance):
-        request = self.context.get('request')
-        is_admin = request.user.is_staff if request else False
-        representation = super(
-            ProductVariationSerializer, self).to_representation(instance)
-        if not is_admin:
+        remove_conf = True
+        if request := self.context.get('request', None):
+            is_admin = request.user.is_staff if request else False
+            representation = super(
+                ProductVariationSerializer, self).to_representation(instance)
+            if is_admin:
+                remove_conf = False
+        if remove_conf:
             representation.pop('cost_price', None)
             representation.pop('digital_file', None)
         return representation

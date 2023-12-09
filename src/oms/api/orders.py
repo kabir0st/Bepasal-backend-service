@@ -1,5 +1,9 @@
+from decimal import Decimal
+
 from django.db import transaction
 from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from core.permissions import IsStaffOrReadOnly
@@ -9,12 +13,8 @@ from oms.api.serializers.order import (OrderItemSerializer,
                                        OrderItemStatusSerializer,
                                        OrderSerializer, OrderStatusSerializer)
 from oms.api.serializers.payments import PaymentSerializer
-from oms.models.order import Order, OrderItemStatus, OrderStatus
-from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
 from oms.models import Payment
-from decimal import Decimal
-
+from oms.models.order import Order, OrderItemStatus, OrderStatus
 from oms.models.payment import FonePayPayment
 from oms.utils import generate_fonepay_qr, verify_qr
 
@@ -24,6 +24,11 @@ class OrderAPI(DefaultViewSet):
     search_fields = ['user_name', 'user_contact']
     queryset = Order.objects.filter().order_by('-id')
     permission_classes = [IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return self.queryset
+        return self.queryset.filter(user=self.user)
 
     def create(self, request, *args, **kwargs):
         with transaction.atomic():
