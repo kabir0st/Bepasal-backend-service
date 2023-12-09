@@ -23,5 +23,13 @@ class DeactivatedClient(models.Model):
         return f"{self.name}"
 
 
+class Template(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    link = models.CharField(max_length=255, unique=True)
+    description = models.TextField(default='')
+
+    is_active = models.BooleanField(default=True)
+
+
 class Domain(DomainMixin):
     pass
