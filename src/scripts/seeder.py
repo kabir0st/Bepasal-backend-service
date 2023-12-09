@@ -8,8 +8,8 @@ from oms.models import OrderItemStatus, OrderStatus
 
 
 def seeder():
-    prod = False
-    main = 'localhost' if not prod else 'himalayancreatives.com'
+    prod = True
+    main = 'localhost' if not prod else 'afterfive.tech'
 
     clients = [{
         'name': "dai ko pasal",
