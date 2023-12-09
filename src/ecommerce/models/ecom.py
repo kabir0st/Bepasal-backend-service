@@ -31,7 +31,8 @@ class ReviewImage(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(UserBase, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='reviews')
     comment = models.TextField()
     rating = models.PositiveIntegerField(validators=[MaxValueValidator(10)])
     images = models.ManyToManyField(

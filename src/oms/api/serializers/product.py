@@ -1,11 +1,11 @@
+from django.db.models import Avg, Sum
 from rest_framework import serializers
 
+from core.utils.functions import client_has_app
 from core.utils.serializers import Base64ImageField
 from oms.models.product import (Category, Product, ProductImage,
-                                ProductVariation,
-                                ProductVariationImage, VariationOption,
-                                VariationType)
-from django.db.models import Sum
+                                ProductVariation, ProductVariationImage,
+                                VariationOption, VariationType)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -87,6 +87,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     default_variation = serializers.SerializerMethodField(read_only=True)
     test_thumbnail_image = serializers.SerializerMethodField(read_only=True)
+    review_summary = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -108,6 +109,17 @@ class ProductListSerializer(serializers.ModelSerializer):
             instance.variations.filter(
                 is_active=True).first(), context={'request': self.context.get(
                     'request')}).data
+
+    def get_review_summary(self, obj):
+        if not client_has_app('ecommerce'):
+            return {}
+        average_rating = obj.reviews.aggregate(
+            average_rating=Avg('rating'))['average_rating']
+        return {
+            'total_reviews': obj.reviews.count(),
+            'average_rating': (
+                average_rating if average_rating is not None else 0)
+        }
 
 
 class AdminProductListSerializer(serializers.ModelSerializer):
