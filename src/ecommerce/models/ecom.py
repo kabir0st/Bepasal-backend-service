@@ -1,6 +1,6 @@
 import os
 from PIL import Image
-from core.utils.functions import optimize_image
+from core.utils.functions import default_json, optimize_image
 import contextlib
 from django.core.validators import MaxValueValidator
 from django.db import models
@@ -14,17 +14,12 @@ from users.models.users import UserBase
 # to implement cart abandoned by user calculated use updated_at
 class Cart(models.Model):
     user = models.OneToOneField(UserBase, on_delete=models.CASCADE)
+    product_variation = models.ForeignKey(
+        ProductVariation, on_delete=models.CASCADE)
+    quantities = models.JSONField(default=default_json)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-
-class CartItem(models.Model):
-    cart = models.ForeignKey(
-        Cart, on_delete=models.CASCADE, related_name='items')
-    product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
 
 
 class ReviewImage(models.Model):

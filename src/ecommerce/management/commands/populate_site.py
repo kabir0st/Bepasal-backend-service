@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 )
 
     def populate_qas(self):
-        print('Populating Reviews . . .')
+        print('Populating QAs . . .')
         for product in Product.objects.filter():
             for _ in range(random.randint(0, self.max_qas)):
                 QA.objects.create(

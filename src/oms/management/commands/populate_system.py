@@ -29,9 +29,9 @@ class Command(BaseCommand):
 
     def populate_categories(self):
         print('Populating Categories . . .')
-        for i in range(self.category_count):
+        for _ in range(self.category_count):
             Category.objects.create(
-                name=f"{fake.word()} {i}",
+                name=f"{fake.word()}",
                 description=fake.text(),
             )
 

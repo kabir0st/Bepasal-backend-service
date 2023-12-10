@@ -1,9 +1,11 @@
+from django.db.models.signals import m2m_changed
 import contextlib
 import os
+import random
 
 from ckeditor.fields import RichTextField
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 from PIL import Image
@@ -83,42 +85,9 @@ class Product(models.Model):
         return f'{self.name}'
 
 
-def file_directory_path(instance, filename):
-    return f"digital_files/{instance.product.slug}/{filename}"
-
-
-class ProductVariation(AbstractProductInfo):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='variations')
-    variation_option_combination = models.ManyToManyField(
-        VariationOption, related_name='variations', blank=True)
-
-    is_default_variation = models.BooleanField(default=False)
-    is_eligible_for_discounts = models.BooleanField(default=True)
-
-    auto_complete_digital_orders = models.BooleanField(default=True)
-    digital_file = models.FileField(upload_to=file_directory_path,
-                                    blank=True, null=True)
-
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        variation_combination = [
-            str(option) for option in (
-                self.variation_option_combination.filter())
-        ]
-        return f"{self.product} {' '.join(variation_combination)}"
-
-    def save(self, *args, **kwargs) -> None:
-        self.trigger_gen = None
-        return super().save(*args, **kwargs)
-
-
 @receiver(pre_save, sender=Product)
 def handle_product_pre_save(sender, instance, *args, **kwargs):
-    instance.trigger_gen = not bool(instance.id)
-    if instance.id and instance.id != Product.objects.get(id=instance.id).name:
-        instance.trigger_gen = True
+    instance.slug = f"{slugify(instance.name)}"
     if instance.thumbnail_image:
         with contextlib.suppress(Exception):
             image_name = instance.thumbnail_image.name
@@ -138,15 +107,47 @@ def handle_product_pre_save(sender, instance, *args, **kwargs):
                 os.remove(optimized_image_path)
 
 
-@receiver(post_save, sender=Product)
-def handle_post_save_product(sender, instance, created, *args, **kwargs):
-    if instance.trigger_gen:
-        instance.slug = f"{slugify(instance.name)}"
-        pre_save.disconnect(handle_product_pre_save, sender=Product)
-        post_save.disconnect(handle_post_save_product, sender=Product)
+def file_directory_path(instance, filename):
+    return f"digital_files/{instance.product.slug}/{filename}"
+
+
+class ProductVariation(AbstractProductInfo):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='variations')
+    variation_option_combination = models.ManyToManyField(
+        VariationOption, related_name='variations', blank=True)
+
+    is_default_variation = models.BooleanField(default=False)
+    is_eligible_for_discounts = models.BooleanField(default=True)
+
+    auto_complete_digital_orders = models.BooleanField(default=True)
+    digital_file = models.FileField(upload_to=file_directory_path,
+                                    blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        variation_combination = [
+            str(option) for option in (
+                self.variation_option_combination.filter())
+        ]
+        return f"{self.product} {' '.join(variation_combination)}"
+
+
+@receiver(
+    m2m_changed, sender=ProductVariation.variation_option_combination.through)
+def handle_variation_option_combination_change(
+        sender, instance, action, **kwargs):
+    if action in ['post_add', 'post_remove', 'post_clear']:
+        variation_combination = [
+            option.name for option in (
+                instance.variation_option_combination.all())
+        ]
+        if not variation_combination:
+            variation_combination = [str(random.randint(10000, 99999))]
+        instance.slug = slugify(
+            f"{instance.product}-{' '.join(variation_combination)}")
         instance.save()
-        pre_save.connect(handle_product_pre_save, sender=Product)
-        post_save.connect(handle_post_save_product, sender=Product)
 
 
 class ProductImage(models.Model):

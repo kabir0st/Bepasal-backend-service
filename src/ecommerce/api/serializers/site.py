@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-from ecommerce.models.ecom import QA, Cart, CartItem, Review, WishList
+from ecommerce.models.ecom import QA, Cart,  Review, WishList
 from oms.api.serializers.product import (
     ProductMiniSerializer, ProductVariationSerializer)
 
@@ -18,27 +18,19 @@ class QASerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CartItemSerializer(serializers.ModelSerializer):
-    product_variation = serializers.SerializerMethodField()
-
-    class Meta:
-        model = CartItem
-        fields = '__all__'
-
-    def get_product_variation(self, obj):
-        return {
-            **ProductMiniSerializer(obj.product_variation.product).data(),
-            'selected_product': ProductVariationSerializer(
-                obj.product_variation).data
-        }
-
-
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
+    product_variation = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
         fields = '__all__'
+
+    def get_product_variation(self, obj):
+        return {
+            **ProductMiniSerializer(obj.product_variation.product).data,
+            'selected_product': ProductVariationSerializer(
+                obj.product_variation).data
+        }
 
 
 class WishListSerializer(serializers.ModelSerializer):
