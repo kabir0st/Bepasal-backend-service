@@ -1,3 +1,4 @@
+import os
 import random
 
 from django.core.management.base import BaseCommand
@@ -14,8 +15,12 @@ fake = Faker()
 
 class Command(BaseCommand):
     help = 'Populate dummy data for testing'
+    max_reviews = 100
 
     def handle(self, *args, **kwargs):
+
+        if os.environ.get("GITHUB_WORKFLOW"):
+            self.max_reviews = 1
         for client in Client.objects.filter():
             with tenant_context(client):
                 if client_has_app('ecommerce'):
@@ -23,7 +28,7 @@ class Command(BaseCommand):
 
     def populate_reviews(self):
         for product in Product.objects.filter():
-            for _ in range(random.randint(0, 20)):
+            for _ in range(random.randint(0, self.max_reviews)):
                 Review.objects.create(
                     user=None,
                     name=fake.name(),

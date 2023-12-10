@@ -1,3 +1,4 @@
+import os
 import random
 from django.core.management.base import BaseCommand
 from faker import Faker
@@ -12,8 +13,13 @@ fake = Faker()
 
 class Command(BaseCommand):
     help = 'Populate dummy data for testing'
+    category_count = 20
+    product_count = 100
 
     def handle(self, *args, **kwargs):
+        if os.environ.get("GITHUB_WORKFLOW"):
+            self.category_count = 1
+            self.product_count = 1
         for client in Client.objects.filter():
             with tenant_context(client):
                 if client_has_app('oms'):
@@ -22,7 +28,7 @@ class Command(BaseCommand):
                     self.populate_products()
 
     def populate_categories(self):
-        for i in range(10):
+        for i in range(self.category_count):
             Category.objects.create(
                 name=f"{fake.word()} {i}",
                 description=fake.text(),
@@ -47,7 +53,7 @@ class Command(BaseCommand):
         categories = Category.objects.all()
         variation_types = VariationType.objects.all()
 
-        for i in range(100):
+        for i in range(self.product_count):
             with transaction.atomic():
                 applied_variation_combinations = []
                 product = Product.objects.create(
