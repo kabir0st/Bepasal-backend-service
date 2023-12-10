@@ -30,6 +30,7 @@ class Command(BaseCommand):
                     self.populate_qas()
 
     def populate_reviews(self):
+        print('Populating Reviews . . .')
         for product in Product.objects.filter():
             for _ in range(random.randint(0, self.max_reviews)):
                 Review.objects.create(
@@ -41,6 +42,7 @@ class Command(BaseCommand):
                 )
 
     def populate_qas(self):
+        print('Populating Reviews . . .')
         for product in Product.objects.filter():
             for _ in range(random.randint(0, self.max_qas)):
                 QA.objects.create(

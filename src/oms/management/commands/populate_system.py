@@ -28,6 +28,7 @@ class Command(BaseCommand):
                     self.populate_products()
 
     def populate_categories(self):
+        print('Populating Categories . . .')
         for i in range(self.category_count):
             Category.objects.create(
                 name=f"{fake.word()} {i}",
@@ -35,6 +36,7 @@ class Command(BaseCommand):
             )
 
     def populate_variation_types(self):
+        print('Populating Variation types . . .')
         variations = {
             'Size': ['SM', 'M', 'L', 'X', 'XL', 'XXL'],
             'Color': ["Red", "Green", "Blue", "Yellow", "Orange",
@@ -50,10 +52,10 @@ class Command(BaseCommand):
                 )
 
     def populate_products(self):
+        print('Populating Products . . .')
         categories = Category.objects.all()
         variation_types = VariationType.objects.all()
-
-        for i in range(self.product_count):
+        for _ in range(self.product_count):
             with transaction.atomic():
                 applied_variation_combinations = []
                 product = Product.objects.create(

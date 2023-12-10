@@ -60,7 +60,7 @@ class VariationOption(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = RichTextField()
     categories = models.ManyToManyField(Category, blank=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
@@ -141,7 +141,7 @@ def handle_product_pre_save(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=Product)
 def handle_post_save_product(sender, instance, created, *args, **kwargs):
     if instance.trigger_gen:
-        instance.slug = f"{slugify(instance.name)}-{instance.id}"
+        instance.slug = f"{slugify(instance.name)}"
         pre_save.disconnect(handle_product_pre_save, sender=Product)
         post_save.disconnect(handle_post_save_product, sender=Product)
         instance.save()
