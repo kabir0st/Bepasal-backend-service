@@ -1,4 +1,5 @@
 
+from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
@@ -64,14 +65,15 @@ class CartAPI(GenericViewSet):
     @action(detail=False, methods=['post'], url_path='add-to-cart')
     def add_to_cart(self, request):
         user = self.request.user
-        wishlist, _ = Cart.objects.get_or_create(user=user)
-        product_variation_slug = request.data.get('product_variation_slug')
-        product_variation = ProductVariation.objects.get(
-            slug=product_variation_slug)
-        wishlist.product_variations.add(product_variation.id)
-        wishlist.quantities[product_variation.slug] = request.data.get(
-            'quantity', 1)
-        wishlist.save()
+        with transaction.atomic():
+            cart, _ = Cart.objects.get_or_create(user=user)
+            product_variation_slug = request.data.get('product_variation_slug')
+            product_variation = ProductVariation.objects.get(
+                slug=product_variation_slug)
+            cart.product_variations.add(product_variation.id)
+            cart.quantities[product_variation.slug] = request.data.get(
+                'quantity', 1)
+            cart.save()
         return Response({'status': True}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], url_path='remove-from-cart')
@@ -82,10 +84,12 @@ class CartAPI(GenericViewSet):
         except Cart.DoesNotExist:
             return Response({'detail': 'Wishlist does not exist'},
                             status=status.HTTP_404_NOT_FOUND)
-        product_id = request.data.get('product_id')
-        product_variation = ProductVariation.objects.get(id=product_id)
+        product_variation_slug = request.data.get('product_variation_slug')
+        product_variation = ProductVariation.objects.get(
+            slug=product_variation_slug)
         wishlist.product_variations.remove(product_variation.id)
         wishlist.quantities.pop(product_variation.slug)
+        wishlist.save()
         return Response({'status': True}, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
@@ -110,13 +114,15 @@ class WishListAPI(GenericViewSet):
 
     @action(detail=False, methods=['post'], url_path='add-to-wishlist')
     def add_to_wishlist(self, request):
-        user = self.request.user
-        wishlist, _ = WishList.objects.get_or_create(user=user)
-        product_id = request.data.get('product_id')
-        product_variation = ProductVariation.objects.get(id=product_id)
-        wishlist.product_variations.add(product_variation)
-        serializer = self.get_serializer(wishlist)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        with transaction.atomic():
+            user = self.request.user
+            wishlist, _ = WishList.objects.get_or_create(user=user)
+            product_variation_slug = request.data.get('product_variation_slug')
+            product_variation = ProductVariation.objects.get(
+                slug=product_variation_slug)
+            wishlist.product_variations.add(product_variation.id)
+            wishlist.save()
+        return Response({'status': True}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], url_path='remove-from-wishlist')
     def remove_from_wishlist(self, request):
@@ -126,16 +132,12 @@ class WishListAPI(GenericViewSet):
         except WishList.DoesNotExist:
             return Response({'detail': 'Wishlist does not exist'},
                             status=status.HTTP_404_NOT_FOUND)
-        product_id = request.data.get('product_id')
-        product_variation = ProductVariation.objects.get(id=product_id)
-        wishlist.product_variations.remove(product_variation)
-        serializer = self.get_serializer(wishlist)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def get(self, request):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        product_variation_slug = request.data.get('product_variation_slug')
+        product_variation = ProductVariation.objects.get(
+            slug=product_variation_slug)
+        wishlist.product_variations.remove(product_variation.id)
+        wishlist.save()
+        return Response({'status': True}, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

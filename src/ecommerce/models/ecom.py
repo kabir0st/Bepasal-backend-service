@@ -14,9 +14,9 @@ from users.models.users import UserBase
 # to implement cart abandoned by user calculated use updated_at
 class Cart(models.Model):
     user = models.OneToOneField(UserBase, on_delete=models.CASCADE)
-    product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE)
-    quantities = models.JSONField(default=default_json)
+    product_variations = models.ManyToManyField(
+        ProductVariation)
+    quantities = models.JSONField(default=default_json, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

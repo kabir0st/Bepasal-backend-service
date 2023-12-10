@@ -91,7 +91,15 @@ class ProductMiniSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_category_details(self, instance):
-        return CategorySerializer(instance.categories, many=True).data
+        data = []
+        for category in instance.categories.filter():
+            data.append(
+                {
+                    'id': category.id,
+                    'name': category.name,
+                    'slug': category.slug
+                })
+        return data
 
 
 class ProductListSerializer(serializers.ModelSerializer):

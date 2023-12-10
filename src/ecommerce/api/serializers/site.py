@@ -19,18 +19,20 @@ class QASerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    product_variation = serializers.SerializerMethodField()
+    product_variations = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
         fields = '__all__'
 
-    def get_product_variation(self, obj):
-        return {
-            **ProductMiniSerializer(obj.product_variation.product).data,
-            'selected_product': ProductVariationSerializer(
-                obj.product_variation).data
-        }
+    def get_product_variations(self, obj):
+        return [
+            {
+                **ProductMiniSerializer(item.product).data,
+                'selected_product': ProductVariationSerializer(
+                    item).data
+            } for item in obj.product_variations.all()
+        ]
 
 
 class WishListSerializer(serializers.ModelSerializer):
