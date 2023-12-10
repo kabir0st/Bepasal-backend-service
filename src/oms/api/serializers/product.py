@@ -71,16 +71,27 @@ class ProductVariationSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         remove_conf = True
+        representation = super(
+            ProductVariationSerializer, self).to_representation(instance)
         if request := self.context.get('request', None):
             is_admin = request.user.is_staff if request else False
-            representation = super(
-                ProductVariationSerializer, self).to_representation(instance)
             if is_admin:
                 remove_conf = False
         if remove_conf:
             representation.pop('cost_price', None)
             representation.pop('digital_file', None)
         return representation
+
+
+class ProductMiniSerializer(serializers.ModelSerializer):
+    category_details = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+    def get_category_details(self, instance):
+        return CategorySerializer(instance.categories, many=True).data
 
 
 class ProductListSerializer(serializers.ModelSerializer):

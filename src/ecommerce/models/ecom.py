@@ -83,3 +83,9 @@ class QA(models.Model):
 def handle_qa_pre_save(sender, instance, *args, **kwargs):
     if instance.user:
         instance.name = instance.user.full_name
+
+
+class WishList(models.Model):
+    user = models.OneToOneField(UserBase, on_delete=models.CASCADE)
+    product_variations = models.ManyToManyField(
+        ProductVariation, blank=True)

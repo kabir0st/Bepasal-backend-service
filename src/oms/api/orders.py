@@ -46,7 +46,8 @@ class OrderAPI(DefaultViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED,
                         headers=headers)
 
-    @action(methods=['POST', 'post'], detail=True)
+    @action(methods=['POST'], detail=True,
+            url_name='staff-approved-payment')
     def staff_approved_payment(self, request, *args, **kwargs):
         if not request.user.is_staff:
             raise APIException('Only Staff can add staff approved payments.')
@@ -63,7 +64,8 @@ class OrderAPI(DefaultViewSet):
             }
         return Response(response, status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['post'], detail=True)
+    @action(methods=['post'], detail=True,
+            url_name='initiate-fonepay')
     def initiate_fonepay(self, request, *args, **kwargs):
         obj = self.get_object()
         fonepay_obj = FonePayPayment.objects.create(
@@ -71,7 +73,7 @@ class OrderAPI(DefaultViewSet):
         res = generate_fonepay_qr(fonepay_obj)
         return Response(res)
 
-    @action(methods=['post'], detail=True)
+    @action(methods=['post'], detail=True, url_name='verify-fonepay')
     def verify_fonepay(self, request, *args, **kwargs):
         obj = FonePayPayment.objects.get(id=request.data['fonepay_payment_id'])
         obj.qr_status = 'success'
