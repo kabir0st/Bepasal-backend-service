@@ -77,3 +77,9 @@ class QA(models.Model):
     answer = models.TextField(default='', blank=True)
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='qas')
+
+
+@receiver(pre_save, sender=QA)
+def handle_qa_pre_save(sender, instance, *args, **kwargs):
+    if instance.user:
+        instance.name = instance.user.full_name

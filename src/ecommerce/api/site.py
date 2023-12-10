@@ -1,14 +1,32 @@
 
 from django.db import transaction
-from requests import Response
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 
+from rest_framework.response import Response
 from core.utils.permissions import IsOwnerOrAdmin, IsOwnerOrReadOnly
 from core.utils.viewsets import DefaultViewSet
-from ecommerce.api.serializers.site import CartSerializer, ReviewSerializer
-from ecommerce.models.ecom import Cart, CartItem, Review
+from ecommerce.api.serializers.site import (CartSerializer, QASerializer,
+                                            ReviewSerializer)
+from ecommerce.models.ecom import QA, Cart, CartItem, Review
 from oms.models.product import ProductVariation
+
+
+def get_initial_load(product_slug):
+    reviews = Review.objects.filter(
+        product__slug=product_slug).order_by('-id')[:5]
+    qas = QA.objects.filter(
+        product__slug=product_slug).order_by('-id')[:5]
+    return {
+        'reviews': ReviewSerializer(reviews, many=True).data,
+        'qas': QASerializer(qas, many=True).data
+    }
+
+
+@api_view(['GET'])
+def get_product_related_info(request, product_slug):
+    return Response(get_initial_load(product_slug),
+                    status=status.HTTP_200_OK)
 
 
 class CartAPI(DefaultViewSet):

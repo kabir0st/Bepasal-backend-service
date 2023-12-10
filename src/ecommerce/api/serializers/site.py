@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-from ecommerce.models.ecom import Cart, Review
+from ecommerce.models.ecom import QA, Cart, Review
 from oms.api.serializers.product import (
     ProductListSerializer, ProductVariationSerializer)
 
@@ -9,6 +9,12 @@ from oms.api.serializers.product import (
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
+        fields = '__all__'
+
+
+class QASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QA
         fields = '__all__'
 
 
