@@ -42,9 +42,6 @@ jobs:
       - name: Generate Env
         working-directory: ./src
         run: python3 gen.py
-      - name: Run Seeder
-        working-directory: ./src
-        run: ./seeder.sh
 
   auto-deploy-job:
     needs: [health-check-job]
