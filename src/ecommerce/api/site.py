@@ -58,11 +58,12 @@ class ReviewAPI(DefaultViewSet):
 
     def get_queryset(self):
         product_id = self.request.GET.get('product', None)
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             if self.request.user.is_staff:
                 return self.queryset
             if not product_id:
                 return self.queryset.filter(user=self.request.user)
         if product_id:
+            print(product_id)
             return self.queryset.filter(product__id=product_id)
         return self.queryset.none()
