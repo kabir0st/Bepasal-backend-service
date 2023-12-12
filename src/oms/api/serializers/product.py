@@ -85,6 +85,8 @@ class ProductVariationSerializer(serializers.ModelSerializer):
 
 class ProductMiniSerializer(serializers.ModelSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
+    enabled_variation_types_details = serializers.SerializerMethodField(
+        read_only=True)
 
     class Meta:
         model = Product
@@ -101,16 +103,38 @@ class ProductMiniSerializer(serializers.ModelSerializer):
                 })
         return data
 
+    def get_enabled_variation_types_details(self, instance):
+        data = []
+        for variation_type in instance.enabled_variation_types.filter():
+            data.append(
+                {
+                    'id': variation_type.id,
+                    'name': variation_type.name,
+                })
+        return data
+
 
 class ProductListSerializer(serializers.ModelSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     default_variation = serializers.SerializerMethodField(read_only=True)
     test_thumbnail_image = serializers.SerializerMethodField(read_only=True)
     review_summary = serializers.SerializerMethodField(read_only=True)
+    enabled_variation_types_details = serializers.SerializerMethodField(
+        read_only=True)
 
     class Meta:
         model = Product
         fields = "__all__"
+
+    def get_enabled_variation_types_details(self, instance):
+        data = []
+        for variation_type in instance.enabled_variation_types.filter():
+            data.append(
+                {
+                    'id': variation_type.id,
+                    'name': variation_type.name,
+                })
+        return data
 
     def get_test_thumbnail_image(self, instance):
         return 'https://picsum.photos/500'
@@ -141,7 +165,26 @@ class ProductListSerializer(serializers.ModelSerializer):
         }
 
 
-class AdminProductListSerializer(serializers.ModelSerializer):
+class ProductSerializer(ProductListSerializer):
+    category_details = serializers.SerializerMethodField(read_only=True)
+    images = serializers.SerializerMethodField(read_only=True)
+    variations = serializers.SerializerMethodField(read_only=True)
+    thumbnail_image = Base64ImageField(required=False)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def get_images(self, instance):
+        return ProductImageSerializer(instance.images.filter(), many=True).data
+
+    def get_variations(self, instance):
+        return ProductVariationSerializer(
+            instance.variations.filter(is_active=True),
+            many=True, context={'request': self.context.get('request')}).data
+
+
+class AdminProductListSerializer(ProductSerializer):
     total_stock = serializers.SerializerMethodField(read_only=True)
     total_sold = serializers.SerializerMethodField(read_only=True)
     highest_cost_price = serializers.SerializerMethodField(read_only=True)
@@ -190,22 +233,3 @@ class AdminProductListSerializer(serializers.ModelSerializer):
 
     def get_variants(self, instance):
         return instance.variations.count()
-
-
-class ProductSerializer(ProductListSerializer):
-    category_details = serializers.SerializerMethodField(read_only=True)
-    images = serializers.SerializerMethodField(read_only=True)
-    variations = serializers.SerializerMethodField(read_only=True)
-    thumbnail_image = Base64ImageField(required=False)
-
-    class Meta:
-        model = Product
-        fields = '__all__'
-
-    def get_images(self, instance):
-        return ProductImageSerializer(instance.images.filter(), many=True).data
-
-    def get_variations(self, instance):
-        return ProductVariationSerializer(
-            instance.variations.filter(is_active=True),
-            many=True, context={'request': self.context.get('request')}).data
