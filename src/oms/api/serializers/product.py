@@ -184,7 +184,7 @@ class ProductSerializer(ProductListSerializer):
             many=True, context={'request': self.context.get('request')}).data
 
 
-class AdminProductListSerializer(ProductSerializer):
+class AdminProductListSerializer(ProductListSerializer):
     total_stock = serializers.SerializerMethodField(read_only=True)
     total_sold = serializers.SerializerMethodField(read_only=True)
     highest_cost_price = serializers.SerializerMethodField(read_only=True)
