@@ -150,10 +150,14 @@ def handle_variation_option_combination_change(
         instance.save()
 
 
+def image_directory_path2(instance, filename):
+    return f"images/{instance.product.slug}/{filename}"
+
+
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=image_directory_path,
+    image = models.ImageField(upload_to=image_directory_path2,
                               null=True,
                               blank=True)
 
@@ -179,10 +183,14 @@ def handle_product_image_pre_save(sender, instance, *args, **kwargs):
                 os.remove(optimized_image_path)
 
 
+def image_directory_path3(instance, filename):
+    return f"images/{instance.product_variation.product.slug}/{filename}"
+
+
 class ProductVariationImage(models.Model):
     product_variation = models.ForeignKey(
         ProductVariation, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=image_directory_path,
+    image = models.ImageField(upload_to=image_directory_path3,
                               null=True,
                               blank=True)
 
