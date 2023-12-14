@@ -15,7 +15,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
+    image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = ProductImage
@@ -45,7 +45,7 @@ class VariationTypeSerializer(serializers.ModelSerializer):
 
 
 class ProductVariationImageSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
+    image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = ProductVariationImage
@@ -169,7 +169,7 @@ class ProductSerializer(ProductListSerializer):
     category_details = serializers.SerializerMethodField(read_only=True)
     images = serializers.SerializerMethodField(read_only=True)
     variations = serializers.SerializerMethodField(read_only=True)
-    thumbnail_image = Base64ImageField(required=False)
+    thumbnail_image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Product
