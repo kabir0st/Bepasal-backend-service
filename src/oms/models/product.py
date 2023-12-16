@@ -111,12 +111,18 @@ def file_directory_path(instance, filename):
     return f"digital_files/{instance.product.slug}/{filename}"
 
 
+def image_directory_path2(instance, filename):
+    return f"images/{instance.product.slug}/{filename}"
+
+
 class ProductVariation(AbstractProductInfo):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='variations')
     variation_option_combination = models.ManyToManyField(
         VariationOption, related_name='variations', blank=True)
 
+    thumbnail_image = models.ImageField(upload_to=image_directory_path2,
+                                        blank=True, null=True)
     is_default_variation = models.BooleanField(default=False)
     is_eligible_for_discounts = models.BooleanField(default=True)
 
@@ -148,10 +154,6 @@ def handle_variation_option_combination_change(
         instance.slug = slugify(
             f"{instance.product}-{' '.join(variation_combination)}")
         instance.save()
-
-
-def image_directory_path2(instance, filename):
-    return f"images/{instance.product.slug}/{filename}"
 
 
 class ProductImage(models.Model):

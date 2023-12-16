@@ -34,4 +34,4 @@ class VariationTypeFilter(FilterSet):
 class ProductVariationFilter(FilterSet):
     class Meta:
         model = ProductVariation
-        exclude = ('digital_file', )
+        exclude = ('digital_file', 'thumbnail_image')

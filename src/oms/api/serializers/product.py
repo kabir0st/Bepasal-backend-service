@@ -56,6 +56,7 @@ class ProductVariationSerializer(serializers.ModelSerializer):
     images = ProductVariationImageSerializer(many=True, read_only=True)
     variation_option_combination_detail = serializers.SerializerMethodField(
         read_only=True)
+    thumbnail_image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = ProductVariation
