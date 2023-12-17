@@ -1,3 +1,4 @@
+import contextlib
 import os
 import random
 from django.core.management.base import BaseCommand
@@ -30,15 +31,16 @@ class Command(BaseCommand):
     def populate_categories(self):
         print('Populating Categories . . .')
         for _ in range(self.category_count):
-            Category.objects.create(
-                name=f"{fake.word()}",
-                description=fake.text(),
-            )
+            with contextlib.suppress(Exception):
+                Category.objects.create(
+                    name=f"{fake.word()}",
+                    description=fake.text(),
+                )
 
     def populate_variation_types(self):
         print('Populating Variation types . . .')
         variations = {
-            'Size': ['SM', 'M', 'L', 'X', 'XL', 'XXL'],
+            'Size': ['Small', 'Medium', 'Large', 'Extra Large'],
             'Color': ["Red", "Green", "Blue", "Yellow", "Orange",
                       "Purple", "Pink", "Brown", "Cyan", "Magenta"],
             'Cloth': ['Cotton', 'Linen', 'Polyester']
