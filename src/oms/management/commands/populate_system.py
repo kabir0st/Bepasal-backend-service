@@ -79,7 +79,7 @@ class Command(BaseCommand):
                         )
                     if variation_option_combination not in (
                             applied_variation_combinations):
-                        ProductVariation.objects.create(
+                        variation = ProductVariation.objects.create(
                             product=product,
                             selling_price=fake.random_int(min=10, max=100),
                             crossed_price=fake.random_int(min=10, max=100),
@@ -87,9 +87,12 @@ class Command(BaseCommand):
                             stock=fake.random_int(min=1, max=100),
                             sku=fake.word(),
                             is_eligible_for_discount=fake.boolean(),
-                        ).variation_option_combination.set(
+                        )
+                        variation.variation_option_combination.set(
                             variation_option_combination)
                         applied_variation_combinations.append(
                             variation_option_combination)
+                product.default_variant = variation
+                product.save()
                 self.stdout.write(self.style.SUCCESS(
                     f'Successfully populated product: {product}'))

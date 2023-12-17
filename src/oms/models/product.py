@@ -1,12 +1,12 @@
-from django.db.models.signals import m2m_changed
 import contextlib
 import os
 import random
 
 from ckeditor.fields import RichTextField
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import m2m_changed, pre_save
 from django.dispatch import receiver
+from django.forms import ValidationError
 from django.utils.text import slugify
 from PIL import Image
 
@@ -69,7 +69,9 @@ class Product(models.Model):
     thumbnail_image = models.ImageField(upload_to=image_directory_path,
                                         blank=True, null=True)
     enabled_variation_types = models.ManyToManyField(VariationType, blank=True)
-
+    default_variant = models.ForeignKey(
+        'ProductVariation', on_delete=models.SET_NULL,
+        null=True, blank=True, default=None, related_name='default_product')
     continue_selling_after_out_of_stock = models.BooleanField(default=True)
 
     is_active = models.BooleanField(default=True)
@@ -87,6 +89,10 @@ class Product(models.Model):
 @receiver(pre_save, sender=Product)
 def handle_product_pre_save(sender, instance, *args, **kwargs):
     instance.slug = f"{slugify(instance.name)}"
+    if instance.default_variant:
+        if instance.default_variant.product != instance:
+            raise ValidationError(
+                "Default variant must be a variant of selected product.")
     if instance.thumbnail_image:
         with contextlib.suppress(Exception):
             image_name = instance.thumbnail_image.name
@@ -122,7 +128,6 @@ class ProductVariation(AbstractProductInfo):
 
     thumbnail_image = models.ImageField(upload_to=image_directory_path2,
                                         blank=True, null=True)
-    is_default_variation = models.BooleanField(default=False)
     is_eligible_for_discounts = models.BooleanField(default=True)
     is_digital = models.BooleanField(default=False)
     auto_complete_digital_orders = models.BooleanField(default=True)

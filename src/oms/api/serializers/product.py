@@ -144,15 +144,9 @@ class ProductListSerializer(serializers.ModelSerializer):
         return CategorySerializer(instance.categories, many=True).data
 
     def get_default_variation(self, instance):
-        if default_var := instance.variations.filter(
-                is_active=True, is_default_variation=True).first():
-            return ProductVariationSerializer(
-                default_var, context={'request': self.context.get(
-                    'request')}).data
-        return ProductVariationSerializer(
-            instance.variations.filter(
-                is_active=True).first(), context={'request': self.context.get(
-                    'request')}).data
+        if instance.default_variant:
+            return ProductVariationSerializer(instance.default_variant).data
+        return {}
 
     def get_review_summary(self, obj):
         if not client_has_app('ecommerce'):
