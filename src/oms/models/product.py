@@ -70,7 +70,6 @@ class Product(models.Model):
                                         blank=True, null=True)
     enabled_variation_types = models.ManyToManyField(VariationType, blank=True)
 
-    is_item_digital = models.BooleanField(default=False)
     continue_selling_after_out_of_stock = models.BooleanField(default=True)
 
     is_active = models.BooleanField(default=True)
@@ -125,7 +124,7 @@ class ProductVariation(AbstractProductInfo):
                                         blank=True, null=True)
     is_default_variation = models.BooleanField(default=False)
     is_eligible_for_discounts = models.BooleanField(default=True)
-
+    is_digital = models.BooleanField(default=False)
     auto_complete_digital_orders = models.BooleanField(default=True)
     digital_file = models.FileField(upload_to=file_directory_path,
                                     blank=True, null=True)
