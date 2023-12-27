@@ -60,12 +60,7 @@ class AbstractProductInfo(models.Model):
         default=0.00, max_digits=60, decimal_places=2)
     cost_price = models.DecimalField(
         default=0.00, max_digits=60, decimal_places=2)
-    stock = models.DecimalField(default=0.00, max_digits=60, decimal_places=2)
-    units = (('unit', 'unit'), ('kg', "kg"),
-             ('g', "g"), ('l', "l"), ('ml', "ml"))
-    stock_unit_in = models.CharField(max_length=25,
-                                     choices=units,
-                                     default='g')
+    stock = models.PositiveBigIntegerField(default=0)
     sku = models.CharField(default='', max_length=255)
     is_eligible_for_discount = models.BooleanField(default=True)
 
