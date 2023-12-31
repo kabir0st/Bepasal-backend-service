@@ -16,8 +16,8 @@ from oms.api.serializers.product import (AdminProductListSerializer,
 from oms.models.product import (Category, Product, ProductImage,
                                 ProductVariation, ProductVariationImage,
                                 VariationOption, VariationType)
-from .filtersets import (CategoryFilter, ProductFilter,
-                         ProductVariationFilter,
+
+from .filtersets import (CategoryFilter, ProductFilter, ProductVariationFilter,
                          VariationOptionFilter, VariationTypeFilter)
 
 

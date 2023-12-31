@@ -15,5 +15,6 @@
 		"editor.formatOnType": false,
 		"editor.formatOnSave": true
 	},
-	"pylint.args": ["load-plugins=pylint_django"]
+	"pylint.args": ["load-plugins=pylint_django"],
+	"python.analysis.typeCheckingMode": "basic"
 }

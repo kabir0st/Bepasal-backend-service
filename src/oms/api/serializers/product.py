@@ -24,7 +24,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class VariationOptionSerializer(serializers.ModelSerializer):
 
-    variation_type_name = serializers.CharField(source='variation_type.name')
+    variation_type_name = serializers.CharField(source='variation_type.name', read_only=True)
 
     class Meta:
         model = VariationOption
