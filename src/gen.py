@@ -15,9 +15,9 @@ def parser():
                         type=str,
                         help='email_username email_password')
     args = parser.parse_args()
-    db_name = None
-    db_user = None
-    db_password = None
+    db_name = 'pasal'
+    db_user = 'admin'
+    db_password = 'password'
     if args.database:
         if len(args.database) != 3:
             print('Error on passing database arguments. Use --help for info.')
@@ -33,7 +33,7 @@ def parser():
     with open('.env', 'w') as env:
         env.write(f'SECRET_KEY={secret_key}\n')
         env.write("DEPLOY_URL=localhost\n")
-        env.write('PREFIX="sasto_"\n')
+        env.write('PREFIX="pasal_"\n')
         env.write(f'DB_NAME={db_name}\n')
         env.write(f'DB_USER={db_user}\n')
         env.write(f'DB_PASSWORD={db_password}\n')

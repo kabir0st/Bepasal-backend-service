@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from oms.models import (Category, Product, ProductImage, ProductVariation,
+from system.models import (Category, Product, ProductImage, ProductVariation,
                         ProductVariationImage, Order, OrderItem,
                         OrderItemStatus,
                         OrderStatus, VariationType, VariationOption)

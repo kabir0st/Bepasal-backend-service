@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-from oms.models.product import Product, ProductVariation
+from system.models.product import Product, ProductVariation
 from users.models.users import UserBase
 
 

@@ -4,7 +4,7 @@ import random
 from django.core.management.base import BaseCommand
 from faker import Faker
 from core.utils.functions import client_has_app
-from oms.models import (Category, VariationType,
+from system.models import (Category, VariationType,
                         VariationOption, Product, ProductVariation)
 from tenants.models import Client
 from django_tenants.utils import tenant_context
@@ -23,7 +23,7 @@ class Command(BaseCommand):
             self.product_count = 1
         for client in Client.objects.filter():
             with tenant_context(client):
-                if client_has_app('oms'):
+                if client_has_app('system'):
                     self.populate_categories()
                     self.populate_variation_types()
                     self.populate_products()

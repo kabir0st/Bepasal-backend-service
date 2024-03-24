@@ -1,4 +1,4 @@
-from oms.models import FonePayPayment, Payment
+from system.models import FonePayPayment, Payment
 from rest_framework import serializers
 
 

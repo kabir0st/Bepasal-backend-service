@@ -2,10 +2,10 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_nested import routers
 
-from oms.api.products import (CategoryAPI, ProductAPI, ProductImageAPI,
+from system.api.products import (CategoryAPI, ProductAPI, ProductImageAPI,
                               ProductVariationAPI,
                               VariationOptionAPI, VariationTypeAPI)
-from oms.api.orders import OrderAPI, OrderItemStatusAPI, OrderStatusAPI
+from system.api.orders import OrderAPI, OrderItemStatusAPI, OrderStatusAPI
 
 router = SimpleRouter()
 router.register('categories', CategoryAPI)

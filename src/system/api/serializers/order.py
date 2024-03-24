@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from oms.models.order import (
+from system.models.order import (
     Order, OrderItem, OrderItemStatus, OrderStatus)
 from .product import ProductVariationSerializer, ProductSerializer
 

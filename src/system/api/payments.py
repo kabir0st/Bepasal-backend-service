@@ -1,5 +1,5 @@
 from core.utils.viewsets import DefaultViewSet
-from oms.models.payment import Payment
+from system.models.payment import Payment
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers.payments import PaymentSerializer

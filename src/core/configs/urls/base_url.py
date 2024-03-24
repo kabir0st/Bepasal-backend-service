@@ -12,17 +12,15 @@ router.register('verifications', VerificationCodeAPI)
 
 router.register('documents', DocumentAPI)
 
-
 urlpatterns = [
     path('api/app/auth/refresh/', login_refresh),
     path('api/app/auth/logout/', logout),
     path('api/app/auth/', login),
     path('api/app/whoami/', whoami),
     path('api/users/', include('users.urls')),
-
 ]
 urlpatterns += static(django_setting.MEDIA_URL,
                       document_root=django_setting.MEDIA_ROOT)
 urlpatterns += static(django_setting.STATIC_URL,
                       document_root=django_setting.STATIC_ROOT)
-urlpatterns += [path('super/', admin.site.urls)]
+urlpatterns += [path('', admin.site.urls)]

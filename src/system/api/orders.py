@@ -9,14 +9,14 @@ from rest_framework.response import Response
 from core.permissions import IsStaffOrReadOnly
 from core.utils.permissions import IsOwnerOrAdmin
 from core.utils.viewsets import DefaultViewSet
-from oms.api.serializers.order import (OrderItemSerializer,
+from system.api.serializers.order import (OrderItemSerializer,
                                        OrderItemStatusSerializer,
                                        OrderSerializer, OrderStatusSerializer)
-from oms.api.serializers.payments import PaymentSerializer
-from oms.models import Payment
-from oms.models.order import Order, OrderItemStatus, OrderStatus
-from oms.models.payment import FonePayPayment
-from oms.utils import generate_fonepay_qr, verify_qr
+from system.api.serializers.payments import PaymentSerializer
+from system.models import Payment
+from system.models.order import Order, OrderItemStatus, OrderStatus
+from system.models.payment import FonePayPayment
+from system.utils import generate_fonepay_qr, verify_qr
 
 
 class OrderAPI(DefaultViewSet):

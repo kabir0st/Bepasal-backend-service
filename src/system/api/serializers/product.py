@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from core.utils.functions import client_has_app
 from core.utils.serializers import Base64ImageField
-from oms.models.product import (Category, Product, ProductImage,
+from system.models.product import (Category, Product, ProductImage,
                                 ProductVariation, ProductVariationImage,
                                 VariationOption, VariationType)
 

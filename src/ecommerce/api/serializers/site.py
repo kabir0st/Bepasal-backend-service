@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 
 from ecommerce.models.ecom import QA, Cart,  Review, WishList
-from oms.api.serializers.product import (
+from system.api.serializers.product import (
     ProductMiniSerializer, ProductVariationSerializer)
 
 

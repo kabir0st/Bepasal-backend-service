@@ -1,6 +1,6 @@
 from django_filters import FilterSet, CharFilter
-from oms.models import Product
-from oms.models.product import (
+from system.models import Product
+from system.models.product import (
     Category, ProductVariation,
     VariationOption, VariationType
 )

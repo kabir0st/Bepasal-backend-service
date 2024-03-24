@@ -24,12 +24,12 @@ TENANT_TYPES = {
         "APPS": ['tenants'] + COMMON_APPS,
         "URLCONF": "core.configs.urls.public"
     },
-    "oms": {
-        "APPS": ['oms'] + COMMON_APPS,
-        "URLCONF": "core.configs.urls.oms"
+    "system": {
+        "APPS": ['system'] + COMMON_APPS,
+        "URLCONF": "core.configs.urls.system"
     },
     "ecommerce": {
-        "APPS": ['oms', 'ecommerce'] + COMMON_APPS,
+        "APPS": ['system', 'ecommerce'] + COMMON_APPS,
         "URLCONF": "core.configs.urls.ecommerce"
     },
 }

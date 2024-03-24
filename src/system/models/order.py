@@ -2,7 +2,7 @@ from django.db import models
 
 from core.utils.functions import default_json
 from core.utils.models import TimeStampedModel
-from oms.models.product import ProductVariation
+from system.models.product import ProductVariation
 from users.models.users import UserBase
 
 

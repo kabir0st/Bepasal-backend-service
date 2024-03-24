@@ -11,7 +11,7 @@ from ecommerce.api.serializers.site import (CartSerializer, QASerializer,
                                             ReviewSerializer,
                                             WishListSerializer)
 from ecommerce.models.ecom import QA, Cart, Review, WishList
-from oms.models.product import ProductVariation
+from system.models.product import ProductVariation
 
 
 class ReviewAPI(DefaultViewSet):

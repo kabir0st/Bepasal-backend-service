@@ -7,7 +7,7 @@ from faker import Faker
 
 from core.utils.functions import client_has_app
 from ecommerce.models.ecom import QA, Review
-from oms.models import Product
+from system.models import Product
 from tenants.models import Client
 
 fake = Faker()

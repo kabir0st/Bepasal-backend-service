@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from core.permissions import IsStaffOrReadOnly
 from core.utils.viewsets import DefaultViewSet
-from oms.api.serializers.product import (AdminProductListSerializer,
+from system.api.serializers.product import (AdminProductListSerializer,
                                          CategorySerializer,
                                          ProductImageSerializer,
                                          ProductListSerializer,
@@ -13,7 +13,7 @@ from oms.api.serializers.product import (AdminProductListSerializer,
                                          ProductVariationSerializer,
                                          VariationOptionSerializer,
                                          VariationTypeSerializer)
-from oms.models.product import (Category, Product, ProductImage,
+from system.models.product import (Category, Product, ProductImage,
                                 ProductVariation, ProductVariationImage,
                                 VariationOption, VariationType)
 
