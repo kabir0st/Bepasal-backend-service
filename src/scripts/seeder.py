@@ -7,7 +7,7 @@ from system.models import OrderItemStatus, OrderStatus
 
 
 def seeder():
-    prod = False
+    prod = True
     main = 'localhost:8000' if not prod else 'himalayancreatives.com'
 
     clients = [{
@@ -45,7 +45,7 @@ def seeder():
         with tenant_context(client):
             user_class = get_user_model()
             admin = user_class.objects.create_superuser(
-                'admin@gmail.com', 'Pasal Admin', 'pass')
+                'admin@pasal.com', 'Pasal Admin', 'pass')
             admin.save()
             status = [
                 'Initiated', 'Processing', 'Sent for delivery', 'Delivered'
