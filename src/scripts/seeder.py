@@ -7,8 +7,8 @@ from system.models import OrderItemStatus, OrderStatus
 
 
 def seeder():
-    prod = True
-    main = 'localhost:8000' if not prod else 'bepasal.com'
+    prod = False
+    main = 'localhost' if not prod else 'bepasal.com'
 
     clients = [{
         'name': "Dai ko Pasal",
