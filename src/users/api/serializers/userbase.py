@@ -1,16 +1,14 @@
-from core.utils.serializers import Base64ImageField
 from rest_framework import serializers
 from users.models import UserBase
 
 
 class RegisterUserBaseSerializer(serializers.ModelSerializer):
-    profile_image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = UserBase
-        fields = ('email', 'password', 'first_name', 'last_name',
-                  'phone_number', 'profile_image', 'gender', 'address',
-                  'zip_code', 'city', 'country')
+        fields = ('email', 'password', 'given_name', 'family_name',
+                  'phone_number', 'display_image', 'address', 'zip_code',
+                  'city', 'country')
 
         extra_kwargs = {
             'is_verified': {
@@ -33,14 +31,13 @@ class RegisterUserBaseSerializer(serializers.ModelSerializer):
 
 
 class UserBaseSerializer(serializers.ModelSerializer):
-    profile_image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = UserBase
-        fields = ('email', 'password', 'first_name', 'last_name',
-                  'phone_number', 'profile_image', 'gender', 'address',
-                  'zip_code', 'city', 'country', 'is_verified', 'last_login',
-                  'is_staff', 'id',  'uuid', 'created_at', 'is_active')
+        fields = ('email', 'password', 'given_name', 'family_name',
+                  'phone_number', 'display_image', 'address', 'zip_code',
+                  'city', 'country', 'is_verified', 'last_login', 'is_staff',
+                  'id', 'uuid', 'created_at', 'is_active')
 
         extra_kwargs = {
             'id': {

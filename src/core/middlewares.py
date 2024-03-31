@@ -57,6 +57,6 @@ def core_exception_handler(exc, context):
 
 
 class PaginationMiddleware(PageNumberPagination):
-    page_size = 20
+    page_size = 10
     page_size_query_param = 'size'
     max_page_size = 100

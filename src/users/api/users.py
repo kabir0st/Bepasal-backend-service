@@ -35,7 +35,7 @@ class UserBaseAPI(DefaultViewSet):
     serializer_class = UserBaseSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'uuid'
-    search_fields = ["first_name", 'last_name', 'email']
+    search_fields = ["given_name", 'family_name', 'email']
     http_method_names = ["get", "patch", "delete"]
 
     def get_queryset(self):
