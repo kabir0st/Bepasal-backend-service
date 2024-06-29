@@ -1,6 +1,8 @@
-from django.dispatch import receiver
-from core.utils.models import TimeStampedModel
 from django.db import models
+from django.dispatch import receiver
+
+from core.utils.models import TimeStampedModel
+
 from .order import Order
 
 
@@ -33,8 +35,8 @@ class FonePayPayment(TimeStampedModel):
 
 
 class Payment(TimeStampedModel):
-    PAYMENT_TYPE_CHOICES = (('fonepay', 'Fonepay'),
-                            ('staff_approved', 'Staff Approved'))
+    PAYMENT_TYPE_CHOICES = (('fonepay', 'Fonepay'), ('staff_approved',
+                                                     'Staff Approved'))
     payment_type = models.CharField(max_length=15,
                                     choices=PAYMENT_TYPE_CHOICES,
                                     default='fonepay')

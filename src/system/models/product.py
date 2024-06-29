@@ -2,7 +2,6 @@ import contextlib
 import os
 import random
 
-from ckeditor.fields import RichTextField
 from django.db import models
 from django.db.models.signals import m2m_changed, pre_save
 from django.dispatch import receiver
@@ -18,8 +17,10 @@ class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug = models.CharField(max_length=255, blank=True, default='')
     description = models.TextField(default='', null=True, blank=True)
-    parent_category = models.ForeignKey(
-        'Category', on_delete=models.PROTECT, null=True, blank=True)
+    parent_category = models.ForeignKey('Category',
+                                        on_delete=models.PROTECT,
+                                        null=True,
+                                        blank=True)
 
     class Meta:
         ordering = ['-id']
@@ -54,8 +55,9 @@ class VariationType(models.Model):
 
 class VariationOption(models.Model):
     name = models.CharField(max_length=255)
-    variation_type = models.ForeignKey(
-        VariationType, on_delete=models.CASCADE, related_name='options')
+    variation_type = models.ForeignKey(VariationType,
+                                       on_delete=models.CASCADE,
+                                       related_name='options')
 
     def __str__(self):
         return f"{self.variation_type} {self.name}"
@@ -63,15 +65,19 @@ class VariationOption(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    description = RichTextField()
+    description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category, blank=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
     thumbnail_image = models.ImageField(upload_to=image_directory_path,
-                                        blank=True, null=True)
+                                        blank=True,
+                                        null=True)
     enabled_variation_types = models.ManyToManyField(VariationType, blank=True)
-    default_variant = models.ForeignKey(
-        'ProductVariation', on_delete=models.SET_NULL,
-        null=True, blank=True, default=None, related_name='default_product')
+    default_variant = models.ForeignKey('ProductVariation',
+                                        on_delete=models.SET_NULL,
+                                        null=True,
+                                        blank=True,
+                                        default=None,
+                                        related_name='default_product')
     continue_selling_after_out_of_stock = models.BooleanField(default=True)
 
     is_active = models.BooleanField(default=True)
@@ -107,8 +113,8 @@ def handle_product_pre_save(sender, instance, *args, **kwargs):
                 with open(optimized_image_path, "rb") as optimized_image_file:
                     instance.thumbnail_image.save(image_name.replace(
                         image_name.split('.')[-1], 'webp'),
-                        optimized_image_file,
-                        save=False)
+                                                  optimized_image_file,
+                                                  save=False)
                 os.remove(optimized_image_path)
 
 
@@ -121,37 +127,40 @@ def image_directory_path2(instance, filename):
 
 
 class ProductVariation(AbstractProductInfo):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='variations')
+    product = models.ForeignKey(Product,
+                                on_delete=models.CASCADE,
+                                related_name='variations')
     variation_option_combination = models.ManyToManyField(
         VariationOption, related_name='variations', blank=True)
 
     thumbnail_image = models.ImageField(upload_to=image_directory_path2,
-                                        blank=True, null=True)
+                                        blank=True,
+                                        null=True)
     is_eligible_for_discounts = models.BooleanField(default=True)
     is_digital = models.BooleanField(default=False)
     auto_complete_digital_orders = models.BooleanField(default=True)
     digital_file = models.FileField(upload_to=file_directory_path,
-                                    blank=True, null=True)
+                                    blank=True,
+                                    null=True)
     slug = models.CharField(max_length=255, blank=True, null=True, unique=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         variation_combination = [
-            str(option) for option in (
-                self.variation_option_combination.filter())
+            str(option)
+            for option in (self.variation_option_combination.filter())
         ]
         return f"{self.product} {' '.join(variation_combination)}"
 
 
-@receiver(
-    m2m_changed, sender=ProductVariation.variation_option_combination.through)
-def handle_variation_option_combination_change(
-        sender, instance, action, **kwargs):
+@receiver(m2m_changed,
+          sender=ProductVariation.variation_option_combination.through)
+def handle_variation_option_combination_change(sender, instance, action,
+                                               **kwargs):
     if action in ['post_add', 'post_remove', 'post_clear']:
         variation_combination = [
-            option.name for option in (
-                instance.variation_option_combination.all())
+            option.name
+            for option in (instance.variation_option_combination.all())
         ]
         if not variation_combination:
             variation_combination = [str(random.randint(10000, 99999))]
@@ -161,8 +170,9 @@ def handle_variation_option_combination_change(
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='images')
+    product = models.ForeignKey(Product,
+                                on_delete=models.CASCADE,
+                                related_name='images')
     image = models.ImageField(upload_to=image_directory_path2,
                               null=True,
                               blank=True)
@@ -184,8 +194,8 @@ def handle_product_image_pre_save(sender, instance, *args, **kwargs):
                 with open(optimized_image_path, "rb") as optimized_image_file:
                     instance.image.save(image_name.replace(
                         image_name.split('.')[-1], 'webp'),
-                        optimized_image_file,
-                        save=False)
+                                        optimized_image_file,
+                                        save=False)
                 os.remove(optimized_image_path)
 
 
@@ -194,8 +204,9 @@ def image_directory_path3(instance, filename):
 
 
 class ProductVariationImage(models.Model):
-    product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE, related_name='images')
+    product_variation = models.ForeignKey(ProductVariation,
+                                          on_delete=models.CASCADE,
+                                          related_name='images')
     image = models.ImageField(upload_to=image_directory_path3,
                               null=True,
                               blank=True)
@@ -217,6 +228,6 @@ def handle_product_image_variation_pre_save(sender, instance, *args, **kwargs):
                 with open(optimized_image_path, "rb") as optimized_image_file:
                     instance.image.save(image_name.replace(
                         image_name.split('.')[-1], 'webp'),
-                        optimized_image_file,
-                        save=False)
+                                        optimized_image_file,
+                                        save=False)
                 os.remove(optimized_image_path)

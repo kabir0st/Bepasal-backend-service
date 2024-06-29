@@ -16,14 +16,17 @@ class DeliveryMethod(TimeStampedModel):
 
 
 class Order(TimeStampedModel):
-    user = models.ForeignKey(
-        UserBase, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='orders')
+    user = models.ForeignKey(UserBase,
+                             on_delete=models.SET_NULL,
+                             null=True,
+                             blank=True,
+                             related_name='orders')
     user_name = models.CharField(max_length=255, default='', blank=True)
     user_contact = models.CharField(max_length=255, default='', blank=True)
     backup_contact = models.CharField(max_length=255, default='', blank=True)
-    status = models.ForeignKey(
-        OrderStatus, related_name='orders', on_delete=models.PROTECT)
+    status = models.ForeignKey(OrderStatus,
+                               related_name='orders',
+                               on_delete=models.PROTECT)
     # prices
     total_price = models.DecimalField(max_digits=60,
                                       decimal_places=2,
@@ -47,14 +50,17 @@ class Order(TimeStampedModel):
     cancellation_remarks = models.TextField(default='', blank=True)
     refunded_remarks = models.TextField(default='', blank=True)
 
-    delivery_method = models.ForeignKey(
-        DeliveryMethod, on_delete=models.SET_NULL, null=True, blank=True)
+    delivery_method = models.ForeignKey(DeliveryMethod,
+                                        on_delete=models.SET_NULL,
+                                        null=True,
+                                        blank=True)
 
     extra_fields = models.JSONField(default=default_json)
 
     delivery_note = models.CharField(max_length=255, default='', blank=True)
-    delivery_location = models.CharField(
-        max_length=255, default='', blank=True)
+    delivery_location = models.CharField(max_length=255,
+                                         default='',
+                                         blank=True)
     geo_tag = models.JSONField(default=default_json, blank=True)
 
     def __str__(self, instance):
@@ -67,10 +73,12 @@ class OrderItemStatus(TimeStampedModel):
 
 
 class OrderItem(TimeStampedModel):
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='order_items')
-    product = models.ForeignKey(
-        ProductVariation, on_delete=models.PROTECT, related_name='order_items')
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='order_items')
+    product = models.ForeignKey(ProductVariation,
+                                on_delete=models.PROTECT,
+                                related_name='order_items')
 
     product_name = models.CharField(max_length=255)
     variation = models.CharField(max_length=255)

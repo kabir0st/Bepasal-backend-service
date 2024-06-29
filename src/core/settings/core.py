@@ -72,7 +72,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Asia/Kathmandu"
@@ -130,7 +129,6 @@ INTERNAL_IPS = [
     # ...
 ]
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -149,7 +147,6 @@ LOGGING = {
     },
 }
 
-
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100214400
 FILE_UPLOAD_MAX_MEMORY_SIZE = 100214400
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100214400
@@ -157,3 +154,5 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 100214400
 NEXTJS_SETTINGS = {
     "nextjs_server_url": "http://127.0.0.1:3000",
 }
+
+CKEDITOR_UPLOAD_PATH = "media/ckeditor_uploads/"
