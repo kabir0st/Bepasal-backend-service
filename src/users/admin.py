@@ -1,10 +1,27 @@
 from django.contrib import admin
-from .models import (UserBase, Settings, VerificationCode, Document)
+from unfold.admin import ModelAdmin
 
-admin.site.register(UserBase)
+from .models import Document, VerificationCode
 
-admin.site.register(Settings)
 
-admin.site.register(VerificationCode)
+class VerificationCodeAdmin(ModelAdmin):
+    list_display = (
+        'email',
+        'code',
+        'is_email_sent',
+        'created_at',
+    )
+    search_fields = ('email', 'code')
+    list_filter = ('is_email_sent', 'created_at')
+    readonly_fields = ('hash', 'created_at')
 
-admin.site.register(Document)
+
+class DocumentAdmin(ModelAdmin):
+    list_display = ('uuid', 'name', 'model', 'status', 'created_at')
+    search_fields = ('name', 'model', 'uuid')
+    list_filter = ('status', 'created_at')
+    readonly_fields = ('uuid', 'created_at')
+
+
+admin.site.register(VerificationCode, VerificationCodeAdmin)
+admin.site.register(Document, DocumentAdmin)

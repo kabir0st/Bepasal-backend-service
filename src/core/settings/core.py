@@ -154,5 +154,3 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 100214400
 NEXTJS_SETTINGS = {
     "nextjs_server_url": "http://127.0.0.1:3000",
 }
-
-CKEDITOR_UPLOAD_PATH = "media/ckeditor_uploads/"

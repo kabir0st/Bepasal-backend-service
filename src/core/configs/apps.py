@@ -1,12 +1,13 @@
 COMMON_APPS = [
     'users',
     # lib
+    'unfold',
+    'unfold.contrib.filters',
     'rest_framework',
     'django_nextjs',
     'django_tenants',
     'drf_yasg',
     'django_filters',
-    'ckeditor',
     # defaults
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,7 +17,6 @@ COMMON_APPS = [
     'django.contrib.staticfiles',
     # 'django_cleanup.apps.CleanupConfig'
 ]
-
 
 TENANT_TYPES = {
     # public

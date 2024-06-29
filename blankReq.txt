@@ -2,7 +2,6 @@ bikram
 celery
 channels
 Django
-django-ckeditor
 django-cleanup
 django-cors-headers
 django-filter
