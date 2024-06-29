@@ -7,7 +7,7 @@
 		"**/.git/subtree-cache/**": true,
 		"**/.venv/*/**": true
 	},
-	"python.defaultInterpreterPath": ".venv/bin/python3",
+	"python.defaultInterpreterPath": ".venv/bin/python",
 	"editor.formatOnSave": true,
 	"breadcrumbs.enabled": true,
 	"python.analysis.extraPaths": ["./src"],
@@ -15,6 +15,5 @@
 		"editor.formatOnType": false,
 		"editor.formatOnSave": true
 	},
-	"pylint.args": ["load-plugins=pylint_django"],
-	"python.analysis.typeCheckingMode": "basic"
+	"pylint.args": ["load-plugins=pylint_django"]
 }
