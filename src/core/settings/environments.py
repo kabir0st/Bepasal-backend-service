@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(path.join(BASE_DIR, ".env"))
 SECRET_KEY = getenv("SECRET_KEY")
 
-channel = getenv("CHANNEL")
+CHANNEL = getenv("CHANNEL")
 DEBUG = getenv("DEBUG", "False") == "True"
 PREFIX_KEY = getenv('PREFIX_KEY')
 
@@ -33,3 +33,5 @@ EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+DOCKER = getenv('DOCKER')

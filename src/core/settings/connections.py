@@ -1,18 +1,22 @@
 import os
 
-from .environments import DB_NAME, DB_PASSWORD, DB_USERNAME, channel
+from .environments import (DB_NAME, DB_PASSWORD, DB_USERNAME, CHANNEL, DOCKER)
 
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 
-REDIS_URL = f"redis://127.0.0.1:6379/{channel}"
+REDIS_HOST = '127.0.0.1'
+DATABASE_HOST = '127.0.0.1'
+
+if DOCKER:
+    REDIS_HOST = 'redis'
+    DATABASE_HOST = 'db'
+REDIS_URL = f"redis://{REDIS_HOST}:6379/{CHANNEL}"
+
 CELERY_BROKER_URL = REDIS_URL
 CELERY_BROKER = REDIS_URL
-SWAGGER_SETTINGS = {
-    "DEFAULT_INFO": "app.urls.api_info",
-}
 
 CACHES = {
     "default": {
@@ -28,7 +32,7 @@ CACHES = {
     }
 }
 CACHE_MIDDLEWARE_SECONDS = 60
-
+DATABASE_HOST = "bepasal-db" if DOCKER else "127.0.0.1"
 
 DATABASES = {
     "default": {
@@ -36,7 +40,7 @@ DATABASES = {
         "NAME": DB_NAME,
         "USER": DB_USERNAME,
         "PASSWORD": DB_PASSWORD,
-        "HOST": "127.0.0.1",
+        "HOST": DATABASE_HOST,
         "PORT": 5432,
     }
 }
