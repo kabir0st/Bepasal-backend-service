@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 load_dotenv(path.join(BASE_DIR, ".env"))
 SECRET_KEY = getenv("SECRET_KEY")
+DEPLOY_URL = getenv("DEPLOY_URL")
 
 CHANNEL = getenv("CHANNEL")
 DEBUG = getenv("DEBUG", "False") == "True"

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django_tenants.utils import tenant_context
+from core.settings.environments import DEPLOY_URL
 from core.utils.functions import client_has_app
 
 from tenants.models import Client, Domain
@@ -7,13 +8,10 @@ from system.models import OrderItemStatus, OrderStatus
 
 
 def seeder():
-    prod = False
-    main = 'localhost' if not prod else 'bepasal.com'
-
     clients = [{
         'name': "Dai ko Pasal",
         'slug': 'pasal',
-        'url': f'pasal.{main}',
+        'url': f'pasal.{DEPLOY_URL}',
         'type': 'ecommerce'
     }]
 
@@ -21,7 +19,7 @@ def seeder():
     client.save()
     print(client)
     domain = Domain()
-    domain.domain = f'landlord.{main}'
+    domain.domain = f'landlord.{DEPLOY_URL}'
     domain.tenant = client
     domain.is_primary = True
     domain.save()
